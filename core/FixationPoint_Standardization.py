@@ -6,6 +6,9 @@ import tkinter.messagebox
 import numpy as np
 import _thread
 from core import Surface_fitting
+import matplotlib.pyplot as plt
+from sklearn.svm import SVR
+from sklearn.metrics import r2_score
 
 outdir = r'D:\python_Projects\eyeTracking_NN\image'
 
@@ -102,20 +105,41 @@ def get_relationship_eye_screenpoint():
     # 关闭打开的文件
     fo.close()
 
+#最小二乘
 def caculateCoeficiente():
+    '''
+        Z_screenX = a0  * x ^ 2 + a1 * x * y + a2 * y ^ 2 + a3 * x + a4 * y + a5
+        Z_screenY = b0  * x ^ 2 + b1 * x * y + b2 * y ^ 2 + b3 * x + b4 * y + b5
+    '''
     if len(ECCG_list) < 9:
         return [], []
+
     X = [x[0] for x in ECCG_list]
     Y = [x[1] for x in ECCG_list]
     Z_screenX = [x[0] for x in point_list]
     Z_screenY = [x[1] for x in point_list]
-    '''
-    Z_screenX = a0  * x ^ 2 + a1 * x * y + a2 * y ^ 2 + a3 * x + a4 * y + a5
-    Z_screenY = b0  * x ^ 2 + b1 * x * y + b2 * y ^ 2 + b3 * x + b4 * y + b5
-    '''
     A = Surface_fitting.matching_3D(X, Y, Z_screenX)
     B = Surface_fitting.matching_3D(X, Y, Z_screenY)
+
     return A, B
+
+
+def caculateCoeficiente_SVR():
+    if len(ECCG_list) < 9:
+        return None, None
+    eccgpoint = np.array([x for x in ECCG_list])
+    Z_screenX = np.array([x[0] for x in point_list])
+    Z_screenY = np.array([x[1] for x in point_list])
+
+    clf_x = SVR(kernel='poly', degree=4, gamma="auto", coef0=0.0, tol=0.001, C=1.0, epsilon=0.1, shrinking=True,
+              cache_size=200, verbose=False, max_iter=- 1)
+    clf_y = SVR(kernel='poly', degree=4, gamma="auto", coef0=0.0, tol=0.001, C=1.0, epsilon=0.1, shrinking=True,
+              cache_size=200, verbose=False, max_iter=- 1)
+    clf_x.fit(eccgpoint, Z_screenX)
+    # print(clf_x.predict(eccgpoint))
+    clf_y.fit(eccgpoint, Z_screenY)
+    # print(clf_y.predict(eccgpoint))
+    return clf_x, clf_y
 
 
 def find_max_region(mask_sel):
@@ -185,8 +209,8 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
 
             # Extract the region of the image that contains the face
             face_image = frame[i][top:bottom, left:right]
-            cv2.imwrite(os.path.join(outdir, 'face_image' + str(btn_index) + '_' + str(i) + '.jpg'),
-                        face_image)
+            # cv2.imwrite(os.path.join(outdir, 'face_image' + str(btn_index) + '_' + str(i) + '.jpg'),
+            #             face_image)
             face_landmarks_list = face_recognition.face_landmarks(face_image)
             for face_landmarks in face_landmarks_list:
                 for facial_feature in face_landmarks.keys():
@@ -267,32 +291,16 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
 
         ECCG_list.append(EC_CG)
 
-        # print(relationship_eye_screenpoint)
-
         # 成功录入btn_index才会+1
         btn_list[btn_index].destroy()  #delete button which has been clicked just now
         btn_index += 1
         if btn_index < 9:
             create_btn(video_capture, frame_WIN, screen_width, screen_height)
-
-        # btn_list[index]['bg'] = 'white'
-
-        # index = index + 1
-
-        # if btn_index < 9:
-        #     btn_list[btn_index]['bg'] = 'yellow'
-        # else:
-        #     result = tkinter.messagebox.showinfo('提示', '注定点标定结束!')
-        #     # get the relationship between eye and screenpoint
-        #     get_relationship_eye_screenpoint()
-        #     if result == tkinter.messagebox.OK:
-        #         frame_WIN.delete(tkinter.ALL)
         if btn_index == 9:
             result = tkinter.messagebox.showinfo('提示', '注定点标定结束!')
             # get the relationship between eye and screenpoint
             get_relationship_eye_screenpoint()
             if result == tkinter.messagebox.OK:
                 tkinter.messagebox.showinfo('提示', '视线追踪开始!')
-                caculateCoeficiente()
     else:
         tkinter.messagebox.showinfo('提示', '未成功录入此注视点，请重新点击!')

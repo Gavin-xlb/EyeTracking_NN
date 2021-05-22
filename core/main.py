@@ -38,6 +38,7 @@ if __name__ == '__main__':
     flag = False
     A = []
     B = []
+    clf_x, clf_y = None, None
     label = Label(canvas, width=2, height=1, bg='red')
     while True:
         if not root.winfo_exists():
@@ -53,21 +54,35 @@ if __name__ == '__main__':
         root.update_idletasks()
         root.update()
 
+        '''
+        use Least square method to get screen point
+        '''
+        # if flag == False:
+        #     A, B = FixationPoint_Standardization.caculateCoeficiente()
+        # if A:
+        #     flag = True
+        #     Point = video.caculatePointAndDisplay(A, B)  #()
+        #
+        #     if Point:
+        #         Screen_X = Point[0]
+        #         Screen_Y = Point[1]
+        #         label.pack()
+        #         label.place(x=Screen_X, y=Screen_Y)
+
+        '''
+        use SVR to get screen point
+        '''
         if flag == False:
-            A, B = FixationPoint_Standardization.caculateCoeficiente()
-        if A:
+            clf_x, clf_y = FixationPoint_Standardization.caculateCoeficiente_SVR()
+        if clf_x is not None:
             flag = True
-            Point = video.caculatePointAndDisplay(A, B)  #()
-
-            if Point:
-                Screen_X = Point[0]
-                Screen_Y = Point[1]
+            point = [video.geteccg()]
+            if point[0]:
+                print("point :", point)
+                x_predict = int(clf_x.predict(np.array(point)))
+                y_predict = int(clf_y.predict(np.array(point)))
                 label.pack()
-                label.place(x=Screen_X, y=Screen_Y)
-
-        # Hit 'Esc' on the keyboard to quit!
-        if cv2.waitKey(1) & 0xFF == 27:
-            break
+                label.place(x=x_predict, y=y_predict)
 
     root.mainloop()
     # Release handle to the webcam

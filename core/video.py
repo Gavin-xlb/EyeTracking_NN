@@ -150,3 +150,7 @@ def caculatePointAndDisplay(A, B):
         return Z_screenX, Z_screenY
     else:
         return ()
+
+
+def geteccg():
+    return caculate_eccg()
