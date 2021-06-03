@@ -107,7 +107,7 @@ def caculateCoeficiente():
         Z_screenX = a0  * x ^ 2 + a1 * x * y + a2 * y ^ 2 + a3 * x + a4 * y + a5
         Z_screenY = b0  * x ^ 2 + b1 * x * y + b2 * y ^ 2 + b3 * x + b4 * y + b5
     '''
-    if len(ECCG_list) < 9:
+    if len(ECCG_list) < BTN_ALL:
         return [], []
 
     X = [x[0] for x in ECCG_list]
@@ -121,7 +121,7 @@ def caculateCoeficiente():
 
 
 def caculateCoeficiente_SVR():
-    if len(ECCG_list) < 9:
+    if len(ECCG_list) < BTN_ALL:
         return None, None
     eccgpoint = np.array([x for x in ECCG_list])
     Z_screenX = np.array([x[0] for x in point_list])

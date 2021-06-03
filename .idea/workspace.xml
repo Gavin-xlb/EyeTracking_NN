@@ -2,153 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/core/ScreenHelper.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/video1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Test_ppi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Testgui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation0_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation0_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation0_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation0_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation0_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation0_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation0_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation0_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation0_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation0_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation1_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation1_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation1_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation1_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation1_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation1_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation1_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation1_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation1_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation1_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation2_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation2_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation2_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation2_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation2_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation2_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation2_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation2_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation2_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation2_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation3_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation3_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation3_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation3_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation3_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation3_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation3_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation3_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation3_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation3_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation4_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation4_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation4_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation4_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation4_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation4_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation4_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation4_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation4_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation4_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation5_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation5_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation5_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation5_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation5_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation5_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation5_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation5_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation5_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation5_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation6_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation6_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation6_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation6_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation6_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation6_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation6_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation6_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation6_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation6_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation7_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation7_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation7_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation7_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation7_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation7_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation7_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation7_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation7_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation7_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation8_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation8_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation8_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation8_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation8_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation8_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation8_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation8_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation8_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation8_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc0_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc1_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc2_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc3_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc4_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc5_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc6_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc7_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_binaryzation_mc8_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image0_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image0_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image0_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image0_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image0_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image0_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image0_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image0_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image0_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image0_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image1_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image1_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image1_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image1_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image1_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image1_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image1_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image1_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image1_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image1_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image2_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image2_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image2_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image2_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image2_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image2_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image2_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image2_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image2_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image2_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image3_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image3_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image3_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image3_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image3_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image3_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image3_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image3_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image3_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image3_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image4_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image4_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image4_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image4_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image4_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image4_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image4_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image4_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image4_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image4_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image5_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image5_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image5_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image5_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image5_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image5_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image5_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image5_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image5_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image5_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image6_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image6_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image6_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image6_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image6_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image6_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image6_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image6_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image6_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image6_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image7_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image7_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image7_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image7_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image7_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image7_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image7_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image7_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image7_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image7_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image8_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image8_0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image8_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image8_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image8_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image8_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image8_3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image8_3.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/right_eye_image8_4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/image/right_eye_image8_4.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_caculate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_caculate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_svr.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_svr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/frame.jpg" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -389,7 +244,7 @@
       <workItem from="1622038229384" duration="2419000" />
       <workItem from="1622040701463" duration="8163000" />
       <workItem from="1622087998084" duration="8659000" />
-      <workItem from="1622716752360" duration="1665000" />
+      <workItem from="1622716752360" duration="2846000" />
     </task>
     <servers />
   </component>
@@ -426,7 +281,7 @@
     <SUITE FILE_PATH="coverage/EyeTracking_NN$Testgui.coverage" NAME="Testgui Coverage Results" MODIFIED="1622045023071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/EyeTracking_NN$test_svr.coverage" NAME="test_svr Coverage Results" MODIFIED="1621836164089" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$Test_fileIO.coverage" NAME="Test_fileIO Coverage Results" MODIFIED="1620831547530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/EyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1622718154873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/EyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1622720066009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1621685786295" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$svr.coverage" NAME="svr Coverage Results" MODIFIED="1621683921481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
   </component>
