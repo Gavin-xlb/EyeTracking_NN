@@ -6,6 +6,8 @@ import numpy as np
 from core import FixationPoint_Standardization
 
 # Get a reference to webcam #0 (the default one)
+from core.FixationPoint_Standardization import screenhelper
+
 video_capture = cv2.VideoCapture(0)
 
 
@@ -38,7 +40,7 @@ def caculate_eccg():
         ret, f = video_capture.read()
         frame.append(f)
         # Resize frame of video to 1/5 size for faster face detection processing
-        s = cv2.resize(frame[i], (0, 0), fx=0.2, fy=0.2)
+        s = cv2.resize(frame[i], (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
         small_frame.append(s)
         i = i + 1
 
@@ -75,12 +77,21 @@ def caculate_eccg():
                             right_eye_location[3] + 1)
                         right_eye_image = face_image[right_eye_location_change[2]:right_eye_location_change[3],
                                           right_eye_location_change[0]:right_eye_location_change[1]]
-                        # EC is relative to the face_image
+                        # EC is relative to the right_eye_image
                         right_eye_height = right_eye_image.shape[0]
                         right_eye_width = right_eye_image.shape[1]
-                        EC.append((round(right_eye_width / 2), round(right_eye_height / 2)))
+                        magnify_times = 5
+                        magnify_right_eye_img = cv2.resize(right_eye_image, (0, 0), fx=magnify_times, fy=magnify_times,
+                                                           interpolation=cv2.INTER_LINEAR)
+                        magnify_right_eye_img_height = magnify_right_eye_img.shape[0]
+                        magnify_right_eye_img_width = magnify_right_eye_img.shape[1]
+
+                        ec_xInpixel = magnify_right_eye_img_width / 2
+                        ec_yInpixel = magnify_right_eye_img_height / 2
+                        PPI = screenhelper.getPPI()
+                        EC.append((ec_xInpixel / magnify_times, ec_yInpixel / magnify_times))
                         # Binaryzation processing to right eye
-                        gray_right_eye_image = cv2.cvtColor(right_eye_image, cv2.COLOR_BGR2GRAY)
+                        gray_right_eye_image = cv2.cvtColor(magnify_right_eye_img, cv2.COLOR_BGR2GRAY)
                         shape = gray_right_eye_image.shape
                         median_x = round(shape[0] / 2)
                         median_y = round(shape[1] / 2)
@@ -95,9 +106,11 @@ def caculate_eccg():
 
                         mask_sel = FixationPoint_Standardization.find_max_region(right_eye_binaryzation)
                         mu = cv2.moments(mask_sel, False)
-                        mc_x = int(mu['m10'] / mu['m00'])
-                        mc_y = int(mu['m01'] / mu['m00'])
-                        mc = (mc_x, mc_y)
+                        mc_x = mu['m10'] / mu['m00']
+                        mc_y = mu['m01'] / mu['m00']
+                        mc = (mc_x / magnify_times, mc_y / magnify_times)
+                        # cv2.circle(right_eye_image, mc, 0, (0, 0, 255), 5)
+                        cv2.imshow("right_eye_img",right_eye_image)
                         CG.append(mc)
                         num += 1
         i += 1
@@ -108,13 +121,13 @@ def caculate_eccg():
         for t in EC:
             x += t[0]
             y += t[1]
-        ec = (round(x / num), round(y / num))
+        ec = (x / num, y / num)
         x = 0
         y = 0
         for t in CG:
             x += t[0]
             y += t[1]
-        cg = (round(x / num), round(y / num))
+        cg = (x / num, y / num)
 
         EC_CG = (cg[0] - ec[0], cg[1] - ec[1])
         return EC_CG

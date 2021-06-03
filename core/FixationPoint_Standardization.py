@@ -5,60 +5,56 @@ import os
 import tkinter.messagebox
 import numpy as np
 import _thread
+
+from PIL import ImageTk, Image
+
 from core import Surface_fitting
 import matplotlib.pyplot as plt
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 
+from core.ScreenHelper import ScreenHelper
+
 outdir = r'D:\python_Projects\eyeTracking_NN\image'
+screenhelper = ScreenHelper()
 
 btn_index = 0
+BTN_ALL = 25 #the number of points
+ROW_POINT = 5
+COL_POINT = 5
 relationship_eye_screenpoint = {} #EC-CG --> (screen_x, screen_y)
 point_list = []  # 9 points' coordinates
 btn_list = []  # 9 buttons
 ECCG_list = []  # 9 points' EC-CG
 
+img_open = None
+img = None
 
 def f(i):
-    return i % 3
+    return i % COL_POINT
 
 
 def g(i):
-    return i // 3
-
-
-# def create_standardpoint():
-#     # 创建一个Canvas，设置其背景色为白色
-#     cv = Canvas(root, bg='white', height=screen_height, width=screen_width)
-#     d = 50
-#     circle_r = 10
-#     # create a point_list to restore
-#     point_list = []
-#     for i in range(9):
-#         circle_x = f(i) * (screen_width - 2 * d) / 2 + d
-#         circle_y = g(i) * (screen_height - 2 * d) / 2 + d
-#         # 创建一个圆形
-#         x0 = circle_x - circle_r
-#         y0 = circle_y - circle_r
-#         x1 = circle_x + circle_r
-#         y1 = circle_y + circle_r
-#         oval = cv.create_oval(x0, y0, x1, y1)
-#         point_list.append(oval)
-#         cv.pack()
+    return i // ROW_POINT
 
 
 def create_btn(cap, frame, screen_width, screen_height):
+    global img_open
+    global img
+    global screenhelper
+    PPI = screenhelper.getPPI()
     # 创建一个Canvas，设置其背景色为白色
     # cv = Canvas(root, bg='white', height=screen_height, width=screen_width)
     d = 50
-    w = 2
-    h = 1
+    w = 20
+    h = 20
 
-    x = f(btn_index) * (screen_width - 2 * d) / 2 + d
-    y = g(btn_index) * (screen_height - 2 * d) / 2 + d
+    x = f(btn_index) * (screen_width - 2 * d) / (COL_POINT-1) + d
+    y = g(btn_index) * (screen_height - 2 * d) / (ROW_POINT-1) + d
     point_list.append((x, y))
-
-    btn = Button(frame, width=w, height=h, text=btn_index, bg='yellow', command=lambda: shot(cap, frame, btn_list, screen_width, screen_height))
+    img_open = Image.open('../res/button_img.jpg')
+    img = ImageTk.PhotoImage(img_open)
+    btn = Button(frame, width=w, height=h, command=lambda: shot(cap, frame, btn_list, screen_width, screen_height), image=img)
     btn.pack()
     btn.place(x=(x - w / 2), y=(y - h / 2) - 20)
     frame.pack()
@@ -186,7 +182,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
         ret, f = video_capture.read()
         frame.append(f)
         # Resize frame of video to 1/5 size for faster face detection processing
-        s = cv2.resize(frame[i], (0, 0), fx=0.2, fy=0.2)
+        s = cv2.resize(frame[i], (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
         small_frame.append(s)
         i = i + 1
 
@@ -227,19 +223,26 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
                             right_eye_location[3] + 1)
                         right_eye_image = face_image[right_eye_location_change[2]:right_eye_location_change[3],
                                           right_eye_location_change[0]:right_eye_location_change[1]]
-                        # EC is relative to the face_image
-                        # EC = ((right_eye_location_change[0] + right_eye_location_change[1]) // 2,
-                        #       (right_eye_location_change[2] + right_eye_location_change[3]) // 2)
                         right_eye_height = right_eye_image.shape[0]
                         right_eye_width = right_eye_image.shape[1]
-                        EC.append((round(right_eye_width / 2), round(right_eye_height / 2)))
+                        magnify_times = 5
+                        magnify_right_eye_img = cv2.resize(right_eye_image, (0, 0), fx=magnify_times, fy=magnify_times, interpolation=cv2.INTER_LINEAR)
+                        magnify_right_eye_img_height = magnify_right_eye_img.shape[0]
+                        magnify_right_eye_img_width = magnify_right_eye_img.shape[1]
+
+                        ec_xInpixel = magnify_right_eye_img_width / 2
+                        ec_yInpixel = magnify_right_eye_img_height / 2
+                        PPI = screenhelper.getPPI()
+                        EC.append((ec_xInpixel / magnify_times, ec_yInpixel / magnify_times))
+
+                        # EC.append((round(right_eye_width / 2), round(right_eye_height / 2)))
                         # print('right_eye_location_change:', right_eye_location_change)
                         print('EC:', EC)
 
                         cv2.imwrite(os.path.join(outdir, 'right_eye_image' + str(btn_index) + '_' + str(i) + '.jpg'),
-                                    right_eye_image)
+                                    magnify_right_eye_img)
                         # Binaryzation processing to right eye
-                        gray_right_eye_image = cv2.cvtColor(right_eye_image, cv2.COLOR_BGR2GRAY)
+                        gray_right_eye_image = cv2.cvtColor(magnify_right_eye_img, cv2.COLOR_BGR2GRAY)
                         shape = gray_right_eye_image.shape
                         median_x = round(shape[0] / 2)
                         median_y = round(shape[1] / 2)
@@ -256,13 +259,14 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
 
                         mask_sel = find_max_region(right_eye_binaryzation)
                         mu = cv2.moments(mask_sel, False)
-                        mc_x = int(mu['m10'] / mu['m00'])
-                        mc_y = int(mu['m01'] / mu['m00'])
-                        mc = (mc_x, mc_y)
+                        mc_x = mu['m10'] / mu['m00']
+                        mc_y = mu['m01'] / mu['m00']
+
+                        mc = (mc_x / magnify_times, mc_y / magnify_times)
                         # print('mc:', mc)
                         cv2.imwrite(os.path.join(outdir, 'right_eye_binaryzation' + str(btn_index) + '_' + str(i) + '.jpg'),
                                     right_eye_binaryzation)
-                        cv2.circle(mask_sel, mc, 0, (0, 0, 255), 5)
+                        # cv2.circle(mask_sel, mc, 0, (0, 0, 255), 5)
                         cv2.imwrite(os.path.join(outdir, 'right_eye_binaryzation_mc' + str(btn_index) + '_' + str(i) + '.jpg'),
                                     mask_sel)
 
@@ -278,13 +282,13 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
         for t in EC:
             x += t[0]
             y += t[1]
-        ec = (round(x / num), round(y / num))
+        ec = (x / num, y / num)
         x = 0
         y = 0
         for t in CG:
             x += t[0]
             y += t[1]
-        cg = (round(x / num), round(y / num))
+        cg = (x / num, y / num)
 
         EC_CG = (cg[0] - ec[0], cg[1] - ec[1])
         print('EC_CG:', EC_CG)
@@ -294,9 +298,9 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
         # 成功录入btn_index才会+1
         btn_list[btn_index].destroy()  #delete button which has been clicked just now
         btn_index += 1
-        if btn_index < 9:
+        if btn_index < BTN_ALL:
             create_btn(video_capture, frame_WIN, screen_width, screen_height)
-        if btn_index == 9:
+        if btn_index == BTN_ALL:
             result = tkinter.messagebox.showinfo('提示', '注定点标定结束!')
             # get the relationship between eye and screenpoint
             get_relationship_eye_screenpoint()

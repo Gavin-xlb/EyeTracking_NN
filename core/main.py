@@ -2,7 +2,7 @@ from core.FixationPoint_Standardization import *
 from tkinter import *
 import cv2
 from PIL import ImageTk, Image
-from core import FixationPoint_Standardization
+from core import FixationPoint_Standardization, ScreenHelper
 from core import video
 
 
@@ -10,25 +10,18 @@ from core import video
 if __name__ == '__main__':
     # video_capture = cv2.VideoCapture(0)
     root = Tk()
+    # get screen information
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
+
+    screenhelper = ScreenHelper.ScreenHelper()
+    # screen_width = screenhelper.getWResolution()
+    # screen_height = screenhelper.getHResolution()
+    print(screen_width, screen_height)
     canvas = Canvas(root, width=screen_width, height=screen_height)
     canvas.pack()
-    # frame = Frame(
-    #     master=canvas,  # 父容器
-    #     bg='white',  # 背景颜色
-    #     relief='groove',  # 边框的3D样式 flat、sunken、raised、groove、ridge、solid。
-    #     bd=3,  # 边框的大小
-    #     height=screen_height,  # 高度
-    #     width=screen_width,  # 宽度
-    #     padx=1,  # 内间距，字体与边框的X距离
-    #     pady=1,  # 内间距，字体与边框的Y距离
-    #     cursor='arrow',  # 鼠标移动时样式 arrow, circle, cross, plus...
-    # )
-    # frame.pack()
-
-    # print(screen_width,screen_height)
     root.geometry("%dx%d+0+0" % (screen_width, screen_height))
+    root.resizable(width=False, height=False)
     root.attributes("-topmost", True)
     point_list, btn_list = create_btn(video.video_capture, canvas, screen_width, screen_height)
 
@@ -41,8 +34,8 @@ if __name__ == '__main__':
     clf_x, clf_y = None, None
     label = Label(canvas, width=2, height=1, bg='red')
     while True:
-        if not root.winfo_exists():
-            break
+        # if not root.winfo_exists():
+        #     break
         _, pic = video.video_capture.read()
         cov = cv2.cvtColor(pic, cv2.COLOR_RGB2BGR)  # 初始图像是RGB格式，转换成BGR即可正常显示了
         img = Image.fromarray(cov).resize((screen_width, screen_height - 20), Image.ANTIALIAS)
@@ -79,10 +72,11 @@ if __name__ == '__main__':
             point = [video.geteccg()]
             if point[0]:
                 print("point :", point)
-                x_predict = int(clf_x.predict(np.array(point)))
-                y_predict = int(clf_y.predict(np.array(point)))
+                x_predict = clf_x.predict(np.array(point))
+                y_predict = clf_y.predict(np.array(point))
                 label.pack()
-                label.place(x=x_predict, y=y_predict)
+                print("predict:(%.2f,%.2f)" % (x_predict, y_predict))
+                label.place(x=int(x_predict), y=int(y_predict))
 
     root.mainloop()
     # Release handle to the webcam
