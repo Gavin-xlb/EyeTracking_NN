@@ -21,7 +21,7 @@ while True:
     small_frame = cv2.resize(frame, (0, 0), fx=0.2, fy=0.2)
 
     # Find all the faces and face encodings in the current frame of video
-    face_locations = face_recognition.face_locations(small_frame)
+    face_locations = face_recognition.face_locations(small_frame, model="cnn")
 
     # Display the results
     for top, right, bottom, left in face_locations:
@@ -47,16 +47,19 @@ while True:
                 elif y > left_y_max:
                     left_y_max = y
             left_eye = face_image[left_y_min - 5:left_y_max + 5, left_x_min - 5:left_x_max + 5]
-            EC = ((left_x_max - left_x_min) / 2 + 5, (left_y_max - left_y_min) / 2 + 5)
+            left_eye = cv2.resize(left_eye, ((left_x_max - left_x_min + 10) * 5, (left_y_max - left_y_min + 10) * 5))
+            EC = ((left_x_max - left_x_min + 10) * 5 / 2, (left_y_max - left_y_min + 10) * 5 / 2)
             gray = cv2.cvtColor(left_eye, cv2.COLOR_RGB2GRAY)
-            ret, thresh = cv2.threshold(gray, 70, 255, 1)
-            img, contours, hierarchy = cv2.findContours(thresh, 1, 2)
-            cnt = contours[0]
+            ret, thresh = cv2.threshold(gray, 65, 255, 1)
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            thresh = cv2.erode(thresh, kernel)
+            contours, hierarchy = cv2.findContours(thresh, 1, 2)
+            #thresh_2 = cv2.drawContours(thresh, contours, -1, (0, 0, 255), 5)
+            cnt = contours[-1]
             M = cv2.moments(cnt)
             if M['m00'] != 0:
                 cx = int(M['m10'] / M['m00'])
                 cy = int(M['m01'] / M['m00'])
-                cv2.circle(thresh, (cx, cy), 0, (0, 0, 255), 5)
                 CG = (cx, cy)
                 print('ECCG: ', CG[0] - EC[0], CG[1] - EC[1])
             cv2.imshow('asd', thresh)

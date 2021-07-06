@@ -3,12 +3,14 @@ import os
 import cv2
 import face_recognition
 import numpy as np
+from gaze_tracking import GazeTracking
 from core import FixationPoint_Standardization
 
 # Get a reference to webcam #0 (the default one)
 from core.FixationPoint_Standardization import screenhelper
 
 video_capture = cv2.VideoCapture(0)
+gaze = GazeTracking()
 
 
 def rectangle_eye(eye_point_list):
@@ -63,56 +65,70 @@ def caculate_eccg():
 
             # Extract the region of the image that contains the face
             face_image = frame[i][top:bottom, left:right]
-            face_landmarks_list = face_recognition.face_landmarks(face_image)
-            for face_landmarks in face_landmarks_list:
-                for facial_feature in face_landmarks.keys():
-                    # get right_eye's point
-                    if facial_feature == 'right_eye':
-                        right_eye_point = face_landmarks[facial_feature]
-                        # rectangle the location of right_eye
-                        right_eye_location = rectangle_eye(right_eye_point)
-                        # minor changes according to experience
-                        right_eye_location_change = (
-                            right_eye_location[0] + 2, right_eye_location[1] + 4, right_eye_location[2] - 2,
-                            right_eye_location[3] + 1)
-                        right_eye_image = face_image[right_eye_location_change[2]:right_eye_location_change[3],
-                                          right_eye_location_change[0]:right_eye_location_change[1]]
-                        # EC is relative to the right_eye_image
-                        right_eye_height = right_eye_image.shape[0]
-                        right_eye_width = right_eye_image.shape[1]
-                        magnify_times = 5
-                        magnify_right_eye_img = cv2.resize(right_eye_image, (0, 0), fx=magnify_times, fy=magnify_times,
-                                                           interpolation=cv2.INTER_LINEAR)
-                        magnify_right_eye_img_height = magnify_right_eye_img.shape[0]
-                        magnify_right_eye_img_width = magnify_right_eye_img.shape[1]
-
-                        ec_xInpixel = magnify_right_eye_img_width / 2
-                        ec_yInpixel = magnify_right_eye_img_height / 2
-                        PPI = screenhelper.getPPI()
-                        EC.append((ec_xInpixel / magnify_times, ec_yInpixel / magnify_times))
-                        # Binaryzation processing to right eye
-                        gray_right_eye_image = cv2.cvtColor(magnify_right_eye_img, cv2.COLOR_BGR2GRAY)
-                        shape = gray_right_eye_image.shape
-                        median_x = round(shape[0] / 2)
-                        median_y = round(shape[1] / 2)
-
-                        # get the mean to the 9 central pixels of right_eye
-                        mean_eye = np.mean(
-                            gray_right_eye_image[(median_x - 1):(median_x + 1), (median_y - 1):(median_y + 1)])
-
-                        ret, right_eye_binaryzation = cv2.threshold(gray_right_eye_image, mean_eye,
-                                                                    255,
-                                                                    cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-
-                        mask_sel = FixationPoint_Standardization.find_max_region(right_eye_binaryzation)
-                        mu = cv2.moments(mask_sel, False)
-                        mc_x = mu['m10'] / mu['m00']
-                        mc_y = mu['m01'] / mu['m00']
-                        mc = (mc_x / magnify_times, mc_y / magnify_times)
-                        # cv2.circle(right_eye_image, mc, 0, (0, 0, 255), 5)
-                        cv2.imshow("right_eye_img",right_eye_image)
-                        CG.append(mc)
-                        num += 1
+            face_image = cv2.resize(face_image, (0, 0), fx=3, fy=3, interpolation=cv2.INTER_LINEAR)
+            gaze.refresh(face_image)
+            img = gaze.annotated_frame()
+            right_pupil = gaze.pupil_right_coords()
+            left_pupile = gaze.pupil_left_coords()
+            if right_pupil == None or left_pupile == None:
+                continue
+            num += 1
+            pupil = ((right_pupil[0] + left_pupile[0]) / 2, (right_pupil[1] + left_pupile[1]) / 2)
+            EC.append(pupil)
+            # face_landmarks_list = face_recognition.face_landmarks(face_image)
+            # for face_landmarks in face_landmarks_list:
+            #     for facial_feature in face_landmarks.keys():
+            #         # get right_eye's point
+            #         if facial_feature == 'right_eye':
+            #             right_eye_point = face_landmarks[facial_feature]
+            #             # rectangle the location of right_eye
+            #             right_eye_location = rectangle_eye(right_eye_point)
+            #             # minor changes according to experience
+            #             right_eye_location_change = (
+            #                 right_eye_location[0] + 2, right_eye_location[1] + 4, right_eye_location[2] - 2,
+            #                 right_eye_location[3] + 1)
+            #             right_eye_image = face_image[right_eye_location_change[2]:right_eye_location_change[3],
+            #                               right_eye_location_change[0]:right_eye_location_change[1]]
+            #             # EC is relative to the right_eye_image
+            #             right_eye_height = right_eye_image.shape[0]
+            #             right_eye_width = right_eye_image.shape[1]
+            #             magnify_times = 5
+            #             magnify_right_eye_img = cv2.resize(right_eye_image, (0, 0), fx=magnify_times, fy=magnify_times,
+            #                                                interpolation=cv2.INTER_LINEAR)
+            #             magnify_right_eye_img_height = magnify_right_eye_img.shape[0]
+            #             magnify_right_eye_img_width = magnify_right_eye_img.shape[1]
+            #
+            #             ec_xInpixel = magnify_right_eye_img_width / 2
+            #             ec_yInpixel = magnify_right_eye_img_height / 2
+            #             PPI = screenhelper.getPPI()
+            #             EC.append((ec_xInpixel / magnify_times, ec_yInpixel / magnify_times))
+            #             # Binaryzation processing to right eye
+            #             gray_right_eye_image = cv2.cvtColor(magnify_right_eye_img, cv2.COLOR_BGR2GRAY)
+            #             shape = gray_right_eye_image.shape
+            #             median_x = round(shape[0] / 2)
+            #             median_y = round(shape[1] / 2)
+            #
+            #             # get the mean to the 9 central pixels of right_eye
+            #             mean_eye = np.mean(
+            #                 gray_right_eye_image[(median_x - 1):(median_x + 1), (median_y - 1):(median_y + 1)])
+            #
+            #             ret, right_eye_binaryzation = cv2.threshold(gray_right_eye_image, mean_eye,
+            #                                                         255,
+            #                                                         cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+            #
+            #             # mask_sel = FixationPoint_Standardization.find_max_region(right_eye_binaryzation)
+            #             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            #             thresh = cv2.erode(right_eye_binaryzation, kernel)
+            #             contours, hierarchy = cv2.findContours(right_eye_binaryzation, 1, 2)
+            #             mu = cv2.moments(contours[-1])
+            #             # mu = cv2.moments(mask_sel, False)
+            #             mc_x = mu['m10'] / mu['m00']
+            #             mc_y = mu['m01'] / mu['m00']
+            #             mc = (mc_x / magnify_times, mc_y / magnify_times)
+            #             # cv2.circle(right_eye_image, mc, 0, (0, 0, 255), 5)
+            #             cv2.imshow("right_eye_img",right_eye_image)
+            #             CG.append(mc)
+            #             num += 1
         i += 1
     # shot successfully
     if (i == frame_num) and (num != 0):
@@ -122,14 +138,13 @@ def caculate_eccg():
             x += t[0]
             y += t[1]
         ec = (x / num, y / num)
-        x = 0
-        y = 0
-        for t in CG:
-            x += t[0]
-            y += t[1]
-        cg = (x / num, y / num)
-
-        EC_CG = (cg[0] - ec[0], cg[1] - ec[1])
+        # x = 0
+        # y = 0
+        # for t in CG:
+        #     x += t[0]
+        #     y += t[1]
+        # cg = (x / num, y / num)
+        EC_CG = ec
         return EC_CG
     else:
         return ()

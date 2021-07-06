@@ -5,8 +5,6 @@ from PIL import ImageTk, Image
 from core import FixationPoint_Standardization, ScreenHelper
 from core import video
 
-
-
 if __name__ == '__main__':
     # video_capture = cv2.VideoCapture(0)
     root = Tk()
@@ -47,29 +45,13 @@ if __name__ == '__main__':
         root.update_idletasks()
         root.update()
 
-        '''
-        use Least square method to get screen point
-        '''
-        # if flag == False:
-        #     A, B = FixationPoint_Standardization.caculateCoeficiente()
-        # if A:
-        #     flag = True
-        #     Point = video.caculatePointAndDisplay(A, B)  #()
-        #
-        #     if Point:
-        #         Screen_X = Point[0]
-        #         Screen_Y = Point[1]
-        #         label.pack()
-        #         label.place(x=Screen_X, y=Screen_Y)
-
-        '''
-        use SVR to get screen point
-        '''
         if flag == False:
-            clf_x, clf_y = FixationPoint_Standardization.caculateCoeficiente_SVR()
+            clf_x, clf_y = FixationPoint_Standardization.caculateCoeficiente_RF()
         if clf_x is not None:
+            print("strat predicting....")
             flag = True
             point = [video.geteccg()]
+            # point = video.geteccg()
             if point[0]:
                 print("point :", point)
                 x_predict = clf_x.predict(np.array(point))
