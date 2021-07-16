@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/Test_list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/eyeTracking_NN.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/eyeTracking_NN.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/ScreenHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/ScreenHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/calibration.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/calibration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/eye.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/eye.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/pupil.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/pupil.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" afterDir="false" />
-    </list>
+    <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,8 +253,16 @@
       <workItem from="1626141792281" duration="12213000" />
       <workItem from="1626248159437" duration="6917000" />
       <workItem from="1626399196972" duration="7642000" />
-      <workItem from="1626445500105" duration="1184000" />
+      <workItem from="1626445500105" duration="1436000" />
     </task>
+    <task id="LOCAL-00001" summary="adapter threshold has completed!">
+      <created>1626446827356</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1626446827356</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,6 +294,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="adapter threshold has completed!" />
+    <option name="LAST_COMMIT_MESSAGE" value="adapter threshold has completed!" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/EyeTracking_NN$video1.coverage" NAME="video1 Coverage Results" MODIFIED="1621834917329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
