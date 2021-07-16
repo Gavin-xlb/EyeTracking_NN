@@ -7,7 +7,7 @@ import numpy as np
 import _thread
 from sklearn.ensemble import RandomForestClassifier,RandomForestRegressor
 from PIL import ImageTk, Image
-from gaze_tracking import GazeTracking
+from gaze_tracking import GazeTracking, gaze_tracking
 from sklearn.metrics import precision_score
 from core import Surface_fitting
 import matplotlib.pyplot as plt
@@ -27,6 +27,7 @@ relationship_eye_screenpoint = {}  # EC-CG --> (screen_x, screen_y)
 point_list = []  # 9 points' coordinates
 btn_list = []  # 9 buttons
 ECCG_list = []  # 9 points' EC-CG
+CG_list = []
 gaze = GazeTracking()
 img_open = None
 img = None
@@ -50,14 +51,15 @@ def create_btn(cap, frame, screen_width, screen_height):
     d = 50
     w = 20
     h = 20
-
+    print('createBtn...')
     x = f(btn_index) * (screen_width - 2 * d) / (COL_POINT - 1) + d
     y = g(btn_index) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
     point_list.append((x, y))
     img_open = Image.open('../res/button_img.jpg')
     img = ImageTk.PhotoImage(img_open)
-    btn = Button(frame, width=w, height=h, command=lambda: shot(cap, frame, btn_list, screen_width, screen_height),
+    btn = Button(frame, width=w, height=h,
                  image=img)
+    btn['command'] = lambda: shot(cap, frame, btn_list, screen_width, screen_height)
     btn.pack()
     btn.place(x=(x - w / 2), y=(y - h / 2) - 20)
     frame.pack()
@@ -202,28 +204,29 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
     print('photo ' + str(btn_index) + ' is proccessing...')
     # the number of frames per eye_point
     frame_num = 5
+    frame_interval = 5
     i = 0
     frame = []
     small_frame = []
 
-    while i < frame_num:
-        # Grab a single frame of video
-        ret, f = video_capture.read()
-        frame.append(f)
-        # Resize frame of video to 1/5 size for faster face detection processing
-        s = cv2.resize(frame[i], (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
-        small_frame.append(s)
+    while i < (frame_num - 1) * frame_interval + 1:
+        if i % frame_interval == 0:
+            # Grab a single frame of video
+            ret, f = video_capture.read()
+            frame.append(f)
+            # Resize frame of video to 1/5 size for faster face detection processing
+            s = cv2.resize(f, (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
+            small_frame.append(s)
         i = i + 1
-
-    i = 0
+    j = 0
     # the number of frame which is successfully detected
     num = 0
     EC = []
     CG = []
-    while i < frame_num:
-        # Find all the faces and face encodings in the current frame of video
-        face_locations = face_recognition.face_locations(small_frame[i])
 
+    while j < frame_num:
+        # Find all the faces and face encodings in the current frame of video
+        face_locations = face_recognition.face_locations(small_frame[j])
         # Display the results
         for top, right, bottom, left in face_locations:
             # Scale back up face locations since the frame we detected in was scaled to 1/4 size
@@ -233,109 +236,55 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
             left *= 5
 
             # Extract the region of the image that contains the face
-            face_image = frame[i][top:bottom, left:right]
-            face_image = cv2.resize(face_image, (0, 0), fx=3, fy=3, interpolation=cv2.INTER_LINEAR)
-            gaze.refresh(face_image)
-            img = gaze.annotated_frame()
-            cv2.imshow('123', img)
-            right_pupil = gaze.pupil_right_coords()
-            left_pupile = gaze.pupil_left_coords()
-            if right_pupil == None or left_pupile == None:
-                continue
-            num += 1
-            pupil = ((right_pupil[0] + left_pupile[0]) / 2, (right_pupil[1] + left_pupile[1]) / 2)
-            EC.append(pupil)
-            # # cv2.imwrite(os.path.join(outdir, 'face_image' + str(btn_index) + '_' + str(i) + '.jpg'),
-            # #             face_image)
-            # face_landmarks_list = face_recognition.face_landmarks(face_image)
-            # for face_landmarks in face_landmarks_list:
-            #     for facial_feature in face_landmarks.keys():
-            #         # get right_eye's point
-            #         if facial_feature == 'right_eye':
-            #             right_eye_point = face_landmarks[facial_feature]
-            #             print(facial_feature, face_landmarks[facial_feature])
-            #             # rectangle the location of right_eye
-            #             right_eye_location = rectangle_eye(right_eye_point)
-            #             # minor changes according to experience
-            #             right_eye_location_change = (
-            #                 right_eye_location[0] + 2, right_eye_location[1] + 4, right_eye_location[2] - 2,
-            #                 right_eye_location[3] + 1)
-            #             right_eye_image = face_image[right_eye_location_change[2]:right_eye_location_change[3],
-            #                               right_eye_location_change[0]:right_eye_location_change[1]]
-            #             right_eye_height = right_eye_image.shape[0]
-            #             right_eye_width = right_eye_image.shape[1]
-            #             magnify_times = 5
-            #             magnify_right_eye_img = cv2.resize(right_eye_image, (0, 0), fx=magnify_times, fy=magnify_times,
-            #                                                interpolation=cv2.INTER_LINEAR)
-            #             magnify_right_eye_img_height = magnify_right_eye_img.shape[0]
-            #             magnify_right_eye_img_width = magnify_right_eye_img.shape[1]
-            #
-            #             ec_xInpixel = magnify_right_eye_img_width / 2
-            #             ec_yInpixel = magnify_right_eye_img_height / 2
-            #             PPI = screenhelper.getPPI()
-            #             EC.append((ec_xInpixel / magnify_times, ec_yInpixel / magnify_times))
-            #
-            #             # EC.append((round(right_eye_width / 2), round(right_eye_height / 2)))
-            #             # print('right_eye_location_change:', right_eye_location_change)
-            #             print('EC:', EC)
-            #
-            #             # cv2.imwrite(os.path.join(outdir, 'right_eye_image' + str(btn_index) + '_' + str(i) + '.jpg'),magnify_right_eye_img)
-            #             # Binaryzation processing to right eye
-            #             gray_right_eye_image = cv2.cvtColor(magnify_right_eye_img, cv2.COLOR_BGR2GRAY)
-            #             shape = gray_right_eye_image.shape
-            #             median_x = round(shape[0] / 2)
-            #             median_y = round(shape[1] / 2)
-            #             print('shape', shape)
-            #             print(median_x, median_y)
-            #             # get the mean to the 9 central pixels of right_eye
-            #             mean_eye = np.mean(
-            #                 gray_right_eye_image[(median_x - 1):(median_x + 1), (median_y - 1):(median_y + 1)])
-            #             print('mean:', mean_eye)
-            #             # mean_eye = gray_right_eye_image[median_x][median_y]  # get the mean to the central pixel of right_eye
-            #             # print('mean_eye: ', mean_eye)
-            #             ret, right_eye_binaryzation = cv2.threshold(gray_right_eye_image, mean_eye,
-            #                                                         255,
-            #                                                         cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-            #
-            #             # mask_sel = find_max_region(right_eye_binaryzation)
-            #             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-            #             thresh = cv2.erode(right_eye_binaryzation, kernel)
-            #             contours, hierarchy = cv2.findContours(right_eye_binaryzation, 1, 2)
-            #             mu = cv2.moments(contours[-1])
-            #             mc_x = mu['m10'] / mu['m00']
-            #             mc_y = mu['m01'] / mu['m00']
-            #
-            #             mc = (mc_x / magnify_times, mc_y / magnify_times)
-            #             # print('mc:', mc)
-            #             # cv2.imwrite(os.path.join(outdir, 'right_eye_binaryzation' + str(btn_index) + '_' + str(i) + '.jpg'),right_eye_binaryzation)
-            #             # cv2.circle(mask_sel, mc, 0, (0, 0, 255), 5)
-            #             # cv2.imwrite(os.path.join(outdir, 'right_eye_binaryzation_mc' + str(btn_index) + '_' + str(i) + '.jpg'),mask_sel)
-            #
-            #             CG.append(mc)
-            #             print('CG:', CG)
-            #
-            #             num += 1
-        i += 1
+            face_image = frame[j][top:bottom, left:right]
+
+            # cv2.imwrite(os.path.join(outdir, 'face_image' + str(btn_index) + '_' + str(i) + '.jpg'),
+            #             face_image)
+            face_landmarks_list = face_recognition.face_landmarks(face_image)
+            for face_landmarks in face_landmarks_list:
+                for facial_feature in face_landmarks.keys():
+                    # get right_eye's point
+                    if facial_feature == 'right_eye':
+                        # right_eye_point has 6 points
+                        right_eye_point = face_landmarks[facial_feature]
+                        print(facial_feature, face_landmarks[facial_feature])
+
+                        gaze = GazeTracking()
+                        gaze.find_iris(face_image, right_eye_point, 1, 1)
+                        frame1 = gaze.annotated_frame()
+                        cv2.imshow('frame', frame1)
+                        right_eye = gaze.eye_right
+                        if right_eye is not None:
+                            ec = right_eye.center
+                            cg = (right_eye.pupil.x, right_eye.pupil.y)
+                            if ec is None or ec[0] is None or ec[1] is None or cg is None or cg[0] is None or cg[1] is None:
+                                return ()
+                            EC.append(ec)
+                            CG.append(cg)
+                            print('ec=', ec)
+                            print('cg=', cg)
+                            num += 1
+        j += 1
+    print('num=', num)
     # shot successfully
-    if (i == frame_num) and (num != 0):
+    if (j == frame_num) and (num != 0):
         x = 0
         y = 0
         for t in EC:
             x += t[0]
             y += t[1]
         ec = (x / num, y / num)
-        print('avg_pupile: ', ec)
-        # x = 0
-        # y = 0
-        # for t in CG:
-        #     x += t[0]
-        #     y += t[1]
-        # cg = (x / num, y / num)
-        #
-        # EC_CG = (cg[0] - ec[0], cg[1] - ec[1])
-        # print('EC_CG:', EC_CG)
+        x = 0
+        y = 0
+        for t in CG:
+            x += t[0]
+            y += t[1]
+        cg = (x / num, y / num)
 
-        ECCG_list.append(ec)
+        EC_CG = (cg[0] - ec[0], cg[1] - ec[1])
+        print('EC_CG:', EC_CG)
+
+        ECCG_list.append(EC_CG)
 
         # 成功录入btn_index才会+1
         btn_list[btn_index].destroy()  # delete button which has been clicked just now
@@ -350,3 +299,8 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
                 tkinter.messagebox.showinfo('提示', '视线追踪开始!')
     else:
         tkinter.messagebox.showinfo('提示', '未成功录入此注视点，请重新点击!')
+
+
+
+
+

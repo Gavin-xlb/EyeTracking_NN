@@ -30,8 +30,9 @@ class Pupil(object):
         kernel = np.ones((3, 3), np.uint8)
         new_frame = cv2.bilateralFilter(eye_frame, 10, 15, 15)
         new_frame = cv2.erode(new_frame, kernel, iterations=3)
-        new_frame = cv2.threshold(new_frame, threshold, 255, cv2.THRESH_BINARY)[1]
-
+        ret, new_frame = cv2.threshold(new_frame, threshold, 255, cv2.THRESH_BINARY)
+        # print('OTSU threshold = ', ret)
+        cv2.imshow('img', new_frame)
         return new_frame
 
     def detect_iris(self, eye_frame):
@@ -48,7 +49,7 @@ class Pupil(object):
 
         try:
             moments = cv2.moments(contours[-2])
-            self.x = int(moments['m10'] / moments['m00'])
-            self.y = int(moments['m01'] / moments['m00'])
+            self.x = moments['m10'] / moments['m00']
+            self.y = moments['m01'] / moments['m00']
         except (IndexError, ZeroDivisionError):
             pass

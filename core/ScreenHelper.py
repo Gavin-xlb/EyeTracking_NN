@@ -28,7 +28,8 @@ class ScreenHelper:
                 self.heightResolution = heightResolution
                 sizeResolution = math.sqrt(pow(widthResolution, 2) + pow(heightResolution, 2))  #对角线的分辨率
                 # 屏幕像素密度（Pixels Per Inch）
-                sizeDensity = sizeResolution / size
+                if size != 0:
+                    sizeDensity = sizeResolution / size
                 self.PPI = sizeDensity
 
     def getHResolution(self):

@@ -4,6 +4,9 @@ from .pupil import Pupil
 
 
 class Calibration(object):
+
+    best_thres = 65
+
     """
     This class calibrates the pupil detection algorithm by finding the
     best binarization threshold value for the person and the webcam.
@@ -16,7 +19,7 @@ class Calibration(object):
 
     def is_complete(self):
         """Returns true if the calibration is completed"""
-        return len(self.thresholds_left) >= self.nb_frames and len(self.thresholds_right) >= self.nb_frames
+        return len(self.thresholds_left) >= self.nb_frames or len(self.thresholds_right) >= self.nb_frames
 
     def threshold(self, side):
         """Returns the threshold value for the given eye.
@@ -25,9 +28,11 @@ class Calibration(object):
             side: Indicates whether it's the left eye (0) or the right eye (1)
         """
         if side == 0:
-            return int(sum(self.thresholds_left) / len(self.thresholds_left))
+            best_thres = int(sum(self.thresholds_left) / len(self.thresholds_left))
+            return best_thres
         elif side == 1:
-            return int(sum(self.thresholds_right) / len(self.thresholds_right))
+            best_thres = int(sum(self.thresholds_right) / len(self.thresholds_right))
+            return best_thres
 
     @staticmethod
     def iris_size(frame):
@@ -54,11 +59,12 @@ class Calibration(object):
         average_iris_size = 0.48
         trials = {}
 
-        for threshold in range(5, 100, 5):
+        for threshold in range(5, 200, 5):
             iris_frame = Pupil.image_processing(eye_frame, threshold)
             trials[threshold] = Calibration.iris_size(iris_frame)
 
         best_threshold, iris_size = min(trials.items(), key=(lambda p: abs(p[1] - average_iris_size)))
+
         return best_threshold
 
     def evaluate(self, eye_frame, side):

@@ -19,6 +19,7 @@ class GazeTracking(object):
         self.eye_right = None
         self.calibration = Calibration()
 
+        '''
         # _face_detector is used to detect faces
         self._face_detector = dlib.get_frontal_face_detector()
 
@@ -26,18 +27,41 @@ class GazeTracking(object):
         cwd = os.path.abspath(os.path.dirname(__file__))
         model_path = os.path.abspath(os.path.join(cwd, "trained_models/shape_predictor_68_face_landmarks.dat"))
         self._predictor = dlib.shape_predictor(model_path)
+        '''
+
 
     @property
     def pupils_located(self):
         """Check that the pupils have been located"""
+
         try:
-            int(self.eye_left.pupil.x)
-            int(self.eye_left.pupil.y)
-            int(self.eye_right.pupil.x)
-            int(self.eye_right.pupil.y)
-            return True
-        except Exception:
+            if self.eye_left is not None:
+                int(self.eye_left.pupil.x)
+                int(self.eye_left.pupil.y)
+                return True
+            if self.eye_right is not None:
+                int(self.eye_right.pupil.x)
+                int(self.eye_right.pupil.y)
+                return True
+
+        except Exception as ex:
+            print("出现如下异常%s"%ex)
             return False
+
+    def find_iris(self, frame, landmarks, side, option):
+        self.frame = frame
+        frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+        try:
+            if side == 0:
+                self.eye_left = Eye(frame, landmarks, 0, self.calibration, option)
+            elif side == 1:
+                self.eye_right = Eye(frame, landmarks, 1, self.calibration, option)
+
+        except IndexError:
+            self.eye_left = None
+            self.eye_right = None
+
+
 
     def _analyze(self):
         """Detects the face and initialize Eye objects"""
@@ -72,8 +96,8 @@ class GazeTracking(object):
     def pupil_right_coords(self):
         """Returns the coordinates of the right pupil"""
         if self.pupils_located:
-            x = self.eye_right.origin[0] + self.eye_right.pupil.x
-            y = self.eye_right.origin[1] + self.eye_right.pupil.y
+            x = int(self.eye_right.origin[0] + self.eye_right.pupil.x)
+            y = int(self.eye_right.origin[1] + self.eye_right.pupil.y)
             return (x, y)
 
     def horizontal_ratio(self):
@@ -120,14 +144,16 @@ class GazeTracking(object):
     def annotated_frame(self):
         """Returns the main frame with pupils highlighted"""
         frame = self.frame.copy()
-
         if self.pupils_located:
-            color = (0, 255, 0)
-            x_left, y_left = self.pupil_left_coords()
-            x_right, y_right = self.pupil_right_coords()
-            cv2.line(frame, (x_left - 5, y_left), (x_left + 5, y_left), color)
-            cv2.line(frame, (x_left, y_left - 5), (x_left, y_left + 5), color)
-            cv2.line(frame, (x_right - 5, y_right), (x_right + 5, y_right), color)
-            cv2.line(frame, (x_right, y_right - 5), (x_right, y_right + 5), color)
+            color = (0, 0, 255)
+            # if self.pupil_left_coords() is not None:
+            #     x_left, y_left = self.pupil_left_coords()
+            #     cv2.line(frame, (x_left - 5, y_left), (x_left + 5, y_left), color)
+            #     cv2.line(frame, (x_left, y_left - 5), (x_left, y_left + 5), color)
+
+            if self.pupil_right_coords() is not None:
+                x_right, y_right = self.pupil_right_coords()
+                cv2.line(frame, (x_right - 5, y_right), (x_right + 5, y_right), color)
+                cv2.line(frame, (x_right, y_right - 5), (x_right, y_right + 5), color)
 
         return frame

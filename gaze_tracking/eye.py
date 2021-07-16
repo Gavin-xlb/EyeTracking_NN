@@ -1,6 +1,8 @@
 import math
 import numpy as np
 import cv2
+
+from gaze_tracking.calibration import Calibration
 from .pupil import Pupil
 
 
@@ -13,13 +15,18 @@ class Eye(object):
     LEFT_EYE_POINTS = [36, 37, 38, 39, 40, 41]
     RIGHT_EYE_POINTS = [42, 43, 44, 45, 46, 47]
 
-    def __init__(self, original_frame, landmarks, side, calibration):
+    def __init__(self, original_frame, landmarks, side, calibration, option):
         self.frame = None
         self.origin = None
         self.center = None
         self.pupil = None
 
-        self._analyze(original_frame, landmarks, side, calibration)
+        # self._analyze(original_frame, landmarks, side, calibration)
+        # option : 0:预先的瞳孔阈值调整 1:正式开始注视点标定
+        if option == 0:
+            self.adjust_threshold(original_frame, landmarks, side, calibration)
+        elif option == 1:
+            self.find_pupil(original_frame, landmarks, side, calibration)
 
     @staticmethod
     def _middle_point(p1, p2):
@@ -42,6 +49,38 @@ class Eye(object):
             points (list): Points of an eye (from the 68 Multi-PIE landmarks)
         """
         region = np.array([(landmarks.part(point).x, landmarks.part(point).y) for point in points])
+        region = region.astype(np.int32)
+        print('region', region)
+
+        # Applying a mask to get only the eye
+        height, width = frame.shape[:2]
+        black_frame = np.zeros((height, width), np.uint8)
+        mask = np.full((height, width), 255, np.uint8)
+        cv2.fillPoly(mask, [region], (0, 0, 0))
+        eye = cv2.bitwise_not(black_frame, frame.copy(), mask=mask)
+
+        # Cropping on the eye
+        margin = 5
+        min_x = np.min(region[:, 0]) - margin
+        max_x = np.max(region[:, 0]) + margin
+        min_y = np.min(region[:, 1]) - margin
+        max_y = np.max(region[:, 1]) + margin
+
+        self.frame = eye[min_y:max_y, min_x:max_x]
+        self.origin = (min_x, min_y)
+
+        height, width = self.frame.shape[:2]
+        self.center = (width / 2, height / 2)
+
+    def isolate_eye(self, frame, landmarks):
+        """Isolate an eye, to have a frame without other part of the face.
+
+        Arguments:
+            frame (numpy.ndarray): Frame containing the face
+            landmarks (dlib.full_object_detection): Facial landmarks for the face region
+            points (list): Points of an eye (from the 68 Multi-PIE landmarks)
+        """
+        region = np.array(landmarks)
         region = region.astype(np.int32)
 
         # Applying a mask to get only the eye
@@ -115,3 +154,16 @@ class Eye(object):
 
         threshold = calibration.threshold(side)
         self.pupil = Pupil(self.frame, threshold)
+
+    def find_pupil(self, original_frame, landmarks, side, calibration):
+
+        self.isolate_eye(original_frame, landmarks)
+        threshold = Calibration.best_thres
+        self.pupil = Pupil(self.frame, threshold)
+
+    def adjust_threshold(self, original_frame, landmarks, side, calibration):
+        self.isolate_eye(original_frame, landmarks)
+        if not calibration.is_complete():
+            calibration.evaluate(self.frame, side)
+        if calibration.is_complete():
+            Calibration.best_thres = calibration.threshold(side)
