@@ -7,6 +7,8 @@ import numpy as np
 import _thread
 from sklearn.ensemble import RandomForestClassifier,RandomForestRegressor
 from PIL import ImageTk, Image
+
+from core.Draw3D import Draw3D
 from gaze_tracking import GazeTracking, gaze_tracking
 from sklearn.metrics import precision_score
 from core import Surface_fitting
@@ -15,14 +17,15 @@ from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 
 from core.ScreenHelper import ScreenHelper
+from core.Config import Config
 
 outdir = r'D:\EyeTracking_NN-master\image'
 screenhelper = ScreenHelper()
 
 btn_index = 0
-BTN_ALL = 25  # the number of points
-ROW_POINT = 5
-COL_POINT = 5
+BTN_ALL = Config.CALIBRATION_POINTS_NUM  # the number of points
+ROW_POINT = Config.CALIBRATION_POINTS_ROW
+COL_POINT = Config.CALIBRATION_POINTS_COL
 relationship_eye_screenpoint = {}  # EC-CG --> (screen_x, screen_y)
 point_list = []  # 9 points' coordinates
 btn_list = []  # 9 buttons
@@ -48,20 +51,18 @@ def create_btn(cap, frame, screen_width, screen_height):
     PPI = screenhelper.getPPI()
     # 创建一个Canvas，设置其背景色为白色
     # cv = Canvas(root, bg='white', height=screen_height, width=screen_width)
-    d = 50
-    w = 20
-    h = 20
+    d = Config.CALIBRATION_POINTS_INTERVAL_EDGE
+    w = Config.CALIBRATION_POINTS_WIDTH
+    h = Config.CALIBRATION_POINTS_HEIGHT
     print('createBtn...')
     x = f(btn_index) * (screen_width - 2 * d) / (COL_POINT - 1) + d
     y = g(btn_index) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
     point_list.append((x, y))
     img_open = Image.open('../res/button_img.jpg')
     img = ImageTk.PhotoImage(img_open)
-    btn = Button(frame, width=w, height=h,
-                 image=img)
+    btn = Button(frame, width=w, height=h, image=img)
     btn['command'] = lambda: shot(cap, frame, btn_list, screen_width, screen_height)
-    btn.pack()
-    btn.place(x=(x - w / 2), y=(y - h / 2) - 20)
+    btn.place(x=(x - w / 2), y=(y - h / 2))
     frame.pack()
     btn_list.append(btn)
     return point_list, btn_list
@@ -98,6 +99,25 @@ def rectangle_eye(eye_point_list):
     return x_min, x_max, y_min, y_max
 
 
+def adaptive_histogram_equalization(gray_image):
+
+    # 创建CLAHE对象
+    clahe = cv2.createCLAHE(2.0, (8, 8))
+    # 限制对比度的自适应阈值均衡化
+    dst = clahe.apply(gray_image)
+    return dst
+
+def histeq(im, nbr_bins=256):
+    """对一幅灰度图像进行直方图均衡化"""
+    # 计算图像的直方图
+    # 在numpy中，也提供了一个计算直方图的函数histogram(),第一个返回的是直方图的统计量，第二个为每个bins的中间值
+    imhist, bins = np.histogram(im.flatten(), nbr_bins, density=True)
+    cdf = imhist.cumsum()   #
+    cdf = 255.0 * cdf / cdf[-1]
+    # 使用累积分布函数的线性插值，计算新的像素值
+    im2 = np.interp(im.flatten(), bins[:-1], cdf)
+    return im2.reshape(im.shape), cdf
+
 def get_relationship_eye_screenpoint():
     # input dict into txt
     fo = open("../res/ECCG_screenPoint.txt", "w")
@@ -122,6 +142,16 @@ def caculateCoeficiente():
     Z_screenY = [x[1] for x in point_list]
     A = Surface_fitting.matching_3D(X, Y, Z_screenX)
     B = Surface_fitting.matching_3D(X, Y, Z_screenY)
+
+    # 离散点和拟合函数可视化
+    # 拟合注视点横坐标
+    Draw3D.drawScatterMap(X, Y, Z_screenX, 'x')
+    Draw3D.drawSurfaceMap(A, 'x')
+    Draw3D.drawWireFrameMap(A, 'x')
+    # 拟合注视点纵坐标
+    Draw3D.drawScatterMap(X, Y, Z_screenY, 'y')
+    Draw3D.drawSurfaceMap(B, 'y')
+    Draw3D.drawWireFrameMap(B, 'y')
 
     return A, B
 
@@ -204,18 +234,23 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
     print('photo ' + str(btn_index) + ' is proccessing...')
     # the number of frames per eye_point
     frame_num = 5
-    frame_interval = 5
+    frame_interval = 6
     i = 0
     frame = []
     small_frame = []
+    pre_frame = []
 
     while i < (frame_num - 1) * frame_interval + 1:
         if i % frame_interval == 0:
             # Grab a single frame of video
             ret, f = video_capture.read()
+            # pre_frame.append(f)
+            # f = adaptive_histogram_equalization(cv2.cvtColor(f, cv2.COLOR_BGR2GRAY))
             frame.append(f)
+
             # Resize frame of video to 1/5 size for faster face detection processing
             s = cv2.resize(f, (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
+
             small_frame.append(s)
         i = i + 1
     j = 0
@@ -251,8 +286,8 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
 
                         gaze = GazeTracking()
                         gaze.find_iris(face_image, right_eye_point, 1, 1)
-                        frame1 = gaze.annotated_frame()
-                        cv2.imshow('frame', frame1)
+                        frame1 = gaze.annotated_frame(frame[j][top:bottom, left:right])
+                        cv2.imshow('frame_calibration', frame1)
                         right_eye = gaze.eye_right
                         if right_eye is not None:
                             ec = right_eye.center
@@ -267,7 +302,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
         j += 1
     print('num=', num)
     # shot successfully
-    if (j == frame_num) and (num != 0):
+    if (j == frame_num) and (num > 1):
         x = 0
         y = 0
         for t in EC:
@@ -281,7 +316,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
             y += t[1]
         cg = (x / num, y / num)
 
-        EC_CG = (cg[0] - ec[0], cg[1] - ec[1])
+        EC_CG = ((cg[0] - ec[0])*Config.eccg_magnify_times, (cg[1] - ec[1])*Config.eccg_magnify_times)
         print('EC_CG:', EC_CG)
 
         ECCG_list.append(EC_CG)

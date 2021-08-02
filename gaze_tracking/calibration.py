@@ -1,6 +1,9 @@
 from __future__ import division
 import cv2
 from .pupil import Pupil
+import numpy as np
+from core import FixationPoint_Standardization
+from PIL import Image
 
 
 class Calibration(object):
@@ -56,6 +59,7 @@ class Calibration(object):
         Argument:
             eye_frame (numpy.ndarray): Frame of the eye to be analyzed
         """
+
         average_iris_size = 0.48
         trials = {}
 

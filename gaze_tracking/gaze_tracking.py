@@ -45,11 +45,12 @@ class GazeTracking(object):
                 return True
 
         except Exception as ex:
-            print("出现如下异常%s"%ex)
+            print("出现如下异常%s" % ex)
             return False
 
     def find_iris(self, frame, landmarks, side, option):
         self.frame = frame
+        # 人脸灰度图像
         frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         try:
             if side == 0:
@@ -98,7 +99,8 @@ class GazeTracking(object):
         if self.pupils_located:
             x = int(self.eye_right.origin[0] + self.eye_right.pupil.x)
             y = int(self.eye_right.origin[1] + self.eye_right.pupil.y)
-            return (x, y)
+            r = int(self.eye_right.pupil.radius)
+            return (x, y, r)
 
     def horizontal_ratio(self):
         """Returns a number between 0.0 and 1.0 that indicates the
@@ -141,9 +143,10 @@ class GazeTracking(object):
             blinking_ratio = (self.eye_left.blinking + self.eye_right.blinking) / 2
             return blinking_ratio > 3.8
 
-    def annotated_frame(self):
+    def annotated_frame(self, f):
         """Returns the main frame with pupils highlighted"""
-        frame = self.frame.copy()
+        # frame = self.frame.copy()
+        frame = f
         if self.pupils_located:
             color = (0, 0, 255)
             # if self.pupil_left_coords() is not None:
@@ -152,8 +155,9 @@ class GazeTracking(object):
             #     cv2.line(frame, (x_left, y_left - 5), (x_left, y_left + 5), color)
 
             if self.pupil_right_coords() is not None:
-                x_right, y_right = self.pupil_right_coords()
+                x_right, y_right, r_right = self.pupil_right_coords()
                 cv2.line(frame, (x_right - 5, y_right), (x_right + 5, y_right), color)
                 cv2.line(frame, (x_right, y_right - 5), (x_right, y_right + 5), color)
+                cv2.circle(frame, (x_right, y_right), int(r_right), (0, 255, 0), 1)
 
         return frame
