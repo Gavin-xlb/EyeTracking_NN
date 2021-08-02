@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Draw3D.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Evaluate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/res/predictInfo.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/start.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/eyeTracking_NN.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/eyeTracking_NN.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/calibration.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/calibration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/pupil.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/pupil.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_Frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_Frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_dict.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_list.py" afterDir="false" />
-    </list>
+    <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="adapter threshold has completed!" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -318,7 +296,7 @@
       <workItem from="1626934941207" duration="10929000" />
       <workItem from="1627005752199" duration="14664000" />
       <workItem from="1627026833286" duration="8390000" />
-      <workItem from="1627867760603" duration="3016000" />
+      <workItem from="1627867760603" duration="3273000" />
     </task>
     <task id="LOCAL-00001" summary="adapter threshold has completed!">
       <created>1626446827356</created>
@@ -334,7 +312,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626446950783</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="adapter threshold has completed!">
+      <created>1627875372992</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1627875372992</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
