@@ -8,6 +8,8 @@ class Config(object):
     AVERAGE_PUPIL_RADIUS = 8
     # 标定点总数
     CALIBRATION_POINTS_NUM = 9
+    # 预测准确度时的点数
+    PREDICTION_POINTS_NUM = 9
     # 标定点行数
     CALIBRATION_POINTS_ROW = int(math.sqrt(CALIBRATION_POINTS_NUM))
     # 标定点列数

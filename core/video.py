@@ -1,5 +1,3 @@
-import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import cv2
 import face_recognition
 import numpy as np
@@ -64,7 +62,7 @@ class Video(object):
         CG = []
         while i < frame_num:
             # Find all the faces and face encodings in the current frame of video
-            face_locations = face_recognition.face_locations(small_frame[i])
+            face_locations = face_recognition.face_locations(small_frame[i], model='cnn')
 
             # Display the results
             for top, right, bottom, left in face_locations:
@@ -115,7 +113,7 @@ class Video(object):
                 x += t[0]
                 y += t[1]
             cg = (x / num, y / num)
-            EC_CG = ((cg[0] - ec[0])*Config.eccg_magnify_times, (cg[1] - ec[1])*Config.eccg_magnify_times)
+            EC_CG = (round((cg[0] - ec[0])*Config.eccg_magnify_times, 2), round((cg[1] - ec[1])*Config.eccg_magnify_times, 2))
             return EC_CG
         else:
             return ()

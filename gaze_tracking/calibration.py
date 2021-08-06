@@ -1,14 +1,16 @@
 from __future__ import division
 import cv2
-from .pupil import Pupil
+
 import numpy as np
 from core import FixationPoint_Standardization
 from PIL import Image
 
+from gaze_tracking.pupil import Pupil
+
 
 class Calibration(object):
 
-    best_thres = 65
+    best_thres = 60
 
     """
     This class calibrates the pupil detection algorithm by finding the
@@ -63,7 +65,7 @@ class Calibration(object):
         average_iris_size = 0.48
         trials = {}
 
-        for threshold in range(5, 200, 5):
+        for threshold in range(5, 100, 5):
             iris_frame = Pupil.image_processing(eye_frame, threshold)
             trials[threshold] = Calibration.iris_size(iris_frame)
 

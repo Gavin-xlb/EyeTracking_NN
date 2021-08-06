@@ -156,8 +156,11 @@ class GazeTracking(object):
 
             if self.pupil_right_coords() is not None:
                 x_right, y_right, r_right = self.pupil_right_coords()
+                x_center = int(self.eye_right.center[0] + self.eye_right.origin[0])
+                y_center = int(self.eye_right.center[1] + self.eye_right.origin[1])
                 cv2.line(frame, (x_right - 5, y_right), (x_right + 5, y_right), color)
                 cv2.line(frame, (x_right, y_right - 5), (x_right, y_right + 5), color)
                 cv2.circle(frame, (x_right, y_right), int(r_right), (0, 255, 0), 1)
+                cv2.circle(frame, (x_center, y_center), 1, color, 1)
 
         return frame

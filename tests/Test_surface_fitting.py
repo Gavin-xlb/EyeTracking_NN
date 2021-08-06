@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
+from core.Draw3D import Draw3D
+
 
 def fun(x):
     round(x, 2)
@@ -77,10 +79,14 @@ def matching_3D(X, Y, Z):
     # 画曲面图和离散点
     fig = plt.figure()  # 建立一个空间
     ax = fig.add_subplot(111, projection='3d')  # 3D坐标
-
+    ax.set_xlabel('EC')
+    ax.set_ylabel('CG')
+    ax.set_zlabel('Sx')
+    ax.set_zlim(0, 2000)
     n = 256
-    u = np.linspace(-20, 20, n)  # 创建一个等差数列
-    x, y = np.meshgrid(u, u)  # 转化成矩阵
+    x1 = np.linspace(-4, 4, n)  # 创建一个等差数列
+    y1 = np.linspace(-3, 3, n)
+    x, y = np.meshgrid(x1, y1)  # 转化成矩阵
 
     # 给出方程
     z = res[0] * x * x + res[1] * x * y + res[2] * y * y + res[3] * x + res[4] * y + res[5]
@@ -88,6 +94,16 @@ def matching_3D(X, Y, Z):
     ax.plot_surface(x, y, z, rstride=3, cstride=3, cmap=cm.jet)
     # 画出点
     ax.scatter(X, Y, Z, c='r')
+
+    q = [-0.2, -0.1, 1, 2.5]
+    y = -1
+    x = 1
+    for i in q:
+        z = res[0] * i * i + res[1] * i * y + res[2] * y * y + res[3] * i + res[4] * y + res[5]
+        print('(EC:%.2f, CG:%.2f)=Sx:%.2f' % (i, y, z))
+    for i in q:
+        z = res[0] * x * x + res[1] * x * i + res[2] * i * i + res[3] * x + res[4] * i + res[5]
+        print('(EC:%.2f, CG:%.2f)=Sx:%.2f' % (x, i, z))
     plt.show()
 
 if __name__ == '__main__':
@@ -105,7 +121,16 @@ if __name__ == '__main__':
     (-2, -1):(768.0, 814.0)
     (-4, -1):(1486.0, 814.0)
     '''
-    X = [3, -2, -5, 4, 0, -5, 2, -2, -4]
-    Y = [-2, -3, -3, -1, -1, -1, -1, -1, -1]
-    Z = [50, 768, 1486, 50, 768, 1486, 50, 768, 1486]
-    matching_3D(X, Y, Z)
+
+    X = [3.27, 0.22, -3.95, 3.42, 0.26, -4.88, 3.94, 1.2, -4.1]
+    Y = [-2.01, -2.59, -1.4, -1.7, -2.34, -1.38, 1.25, 1.8, 1.4]
+    Z_x = [50, 768, 1486, 50, 768, 1486, 50, 768, 1486]
+    Z_y = [50, 50, 50, 432, 432, 432, 814, 814, 814]
+    # matching_3D(X, Y, Z_x)
+    # matching_3D(X, Y, Z_y)
+
+    Draw3D.drawScatterMap(X, Y, Z_x, 'x')
+    Draw3D.drawScatterMap(X, Y, Z_y, 'y')
+
+    # Z = [50, 50, 50, 432, 432, 432, 814, 814, 814]
+    # matching_3D(X, Y, Z)

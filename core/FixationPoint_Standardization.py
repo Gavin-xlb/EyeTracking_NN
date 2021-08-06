@@ -5,11 +5,11 @@ import os
 import tkinter.messagebox
 import numpy as np
 import _thread
-from sklearn.ensemble import RandomForestClassifier,RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from PIL import ImageTk, Image
 
 from core.Draw3D import Draw3D
-from gaze_tracking import GazeTracking, gaze_tracking
+
 from sklearn.metrics import precision_score
 from core import Surface_fitting
 import matplotlib.pyplot as plt
@@ -18,6 +18,7 @@ from sklearn.metrics import r2_score
 
 from core.ScreenHelper import ScreenHelper
 from core.Config import Config
+from gaze_tracking.gaze_tracking import GazeTracking
 
 outdir = r'D:\EyeTracking_NN-master\image'
 screenhelper = ScreenHelper()
@@ -107,6 +108,7 @@ def adaptive_histogram_equalization(gray_image):
     dst = clahe.apply(gray_image)
     return dst
 
+
 def histeq(im, nbr_bins=256):
     """对一幅灰度图像进行直方图均衡化"""
     # 计算图像的直方图
@@ -117,6 +119,7 @@ def histeq(im, nbr_bins=256):
     # 使用累积分布函数的线性插值，计算新的像素值
     im2 = np.interp(im.flatten(), bins[:-1], cdf)
     return im2.reshape(im.shape), cdf
+
 
 def get_relationship_eye_screenpoint():
     # input dict into txt
@@ -146,12 +149,12 @@ def caculateCoeficiente():
     # 离散点和拟合函数可视化
     # 拟合注视点横坐标
     Draw3D.drawScatterMap(X, Y, Z_screenX, 'x')
-    Draw3D.drawSurfaceMap(A, 'x')
-    Draw3D.drawWireFrameMap(A, 'x')
+    # Draw3D.drawSurfaceMap(A, 'x')
+    # Draw3D.drawWireFrameMap(A, 'x')
     # 拟合注视点纵坐标
     Draw3D.drawScatterMap(X, Y, Z_screenY, 'y')
-    Draw3D.drawSurfaceMap(B, 'y')
-    Draw3D.drawWireFrameMap(B, 'y')
+    # Draw3D.drawSurfaceMap(B, 'y')
+    # Draw3D.drawWireFrameMap(B, 'y')
 
     return A, B
 
@@ -261,7 +264,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
 
     while j < frame_num:
         # Find all the faces and face encodings in the current frame of video
-        face_locations = face_recognition.face_locations(small_frame[j])
+        face_locations = face_recognition.face_locations(small_frame[j], model='cnn')
         # Display the results
         for top, right, bottom, left in face_locations:
             # Scale back up face locations since the frame we detected in was scaled to 1/4 size
@@ -316,7 +319,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
             y += t[1]
         cg = (x / num, y / num)
 
-        EC_CG = ((cg[0] - ec[0])*Config.eccg_magnify_times, (cg[1] - ec[1])*Config.eccg_magnify_times)
+        EC_CG = (round((cg[0] - ec[0])*Config.eccg_magnify_times, 2), round((cg[1] - ec[1])*Config.eccg_magnify_times, 2))
         print('EC_CG:', EC_CG)
 
         ECCG_list.append(EC_CG)

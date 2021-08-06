@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="adapter threshold has completed!" />
+    <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="adapter threshold has completed!">
+      <change afterPath="$PROJECT_DIR$/image/0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Draw3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Draw3D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/video1.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gaze_tracking/calibration.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/calibration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gaze_tracking/eye.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/eye.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gaze_tracking/pupil.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/pupil.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/predictInfo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/predictInfo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Test_caculate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_caculate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Test_gpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_gpu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Test_surface_fitting.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_surface_fitting.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,15 +52,15 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\python_Projects\EyeTracking_NN" />
+      <recent name="D:\python_Projects\eyeTracking_NN\core" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\python_Projects\EyeTracking_NN" />
       <recent name="D:\EyeTracking_NN-master" />
       <recent name="D:\EyeTracking_NN-master\core" />
       <recent name="D:\python_Projects\EyeTracking_NN\core" />
-      <recent name="D:\python_Projects\eyeTracking_NN\core" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\python_Projects\EyeTracking_NN" />
       <recent name="D:\python_Projects\eyeTracking_NN\core" />
     </key>
   </component>
@@ -57,21 +76,18 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
-    <configuration name="Draw3D" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.Test_caculate">
+    <configuration name="Test_caculate" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="eyeTracking_NN" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/Draw3D.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_caculate.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -80,7 +96,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test_Frame" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Test_gpu" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="eyeTracking_NN" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -93,7 +109,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_Frame.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_gpu.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -102,42 +118,17 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test_dict" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Test_surface_fitting" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="eyeTracking_NN" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_dict.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Test_list" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="eyeTracking_NN" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_list.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_surface_fitting.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -212,21 +203,43 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="video1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="eyeTracking_NN" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/video1.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.face_recognition" />
       <item itemvalue="Python.main" />
-      <item itemvalue="Python.Draw3D" />
-      <item itemvalue="Python.Test_dict" />
-      <item itemvalue="Python.Test_list" />
-      <item itemvalue="Python.Test_Frame" />
+      <item itemvalue="Python.Test_gpu" />
+      <item itemvalue="Python.video1" />
+      <item itemvalue="Python.Test_caculate" />
+      <item itemvalue="Python.Test_surface_fitting" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Test_caculate" />
+        <item itemvalue="Python.Test_surface_fitting" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.Test_Frame" />
-        <item itemvalue="Python.Test_list" />
-        <item itemvalue="Python.Draw3D" />
-        <item itemvalue="Python.Test_dict" />
+        <item itemvalue="Python.video1" />
+        <item itemvalue="Python.Test_gpu" />
       </list>
     </recent_temporary>
   </component>
@@ -296,7 +309,17 @@
       <workItem from="1626934941207" duration="10929000" />
       <workItem from="1627005752199" duration="14664000" />
       <workItem from="1627026833286" duration="8390000" />
-      <workItem from="1627867760603" duration="3273000" />
+      <workItem from="1627867760603" duration="11557000" />
+      <workItem from="1627952518333" duration="18091000" />
+      <workItem from="1628041425506" duration="1650000" />
+      <workItem from="1628044245109" duration="1173000" />
+      <workItem from="1628045722627" duration="2570000" />
+      <workItem from="1628049328814" duration="1536000" />
+      <workItem from="1628053757391" duration="13078000" />
+      <workItem from="1628069476625" duration="1536000" />
+      <workItem from="1628126019047" duration="12657000" />
+      <workItem from="1628146040807" duration="10737000" />
+      <workItem from="1628214963951" duration="16834000" />
     </task>
     <task id="LOCAL-00001" summary="adapter threshold has completed!">
       <created>1626446827356</created>
@@ -358,7 +381,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/EyeTracking_NN$video1.coverage" NAME="video1 Coverage Results" MODIFIED="1621834917329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
-    <SUITE FILE_PATH="coverage/EyeTracking_NN$Test_caculate.coverage" NAME="Test_caculate Coverage Results" MODIFIED="1621835587689" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/EyeTracking_NN$Test_caculate.coverage" NAME="Test_caculate Coverage Results" MODIFIED="1628142191311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/EyeTracking_NN$Test_list.coverage" NAME="Test_list Coverage Results" MODIFIED="1626159049673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$Test_canvas.coverage" NAME="Test_canvas Coverage Results" MODIFIED="1620854322752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$Test_caculate.coverage" NAME="Test_caculate Coverage Results" MODIFIED="1621329690213" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
@@ -375,7 +398,7 @@
     <SUITE FILE_PATH="coverage/EyeTracking_NN$Testgui.coverage" NAME="Testgui Coverage Results" MODIFIED="1622045023071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/EyeTracking_NN$test_svr.coverage" NAME="test_svr Coverage Results" MODIFIED="1621836164089" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$Test_fileIO.coverage" NAME="Test_fileIO Coverage Results" MODIFIED="1620831547530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/EyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1627875063746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/EyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1628232636549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1621685786295" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$svr.coverage" NAME="svr Coverage Results" MODIFIED="1621683921481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
   </component>

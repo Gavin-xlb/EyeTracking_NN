@@ -1,4 +1,5 @@
 import math
+import random
 
 from core.Evaluate import Evaluate
 from core.FixationPoint_Standardization import *
@@ -8,7 +9,7 @@ from PIL import ImageTk, Image
 from core import FixationPoint_Standardization, ScreenHelper
 from core.video import Video
 import time
-import threading
+
 
 validate_interval = Config.VALIDATE_INTERVAL  # the time your eyes can be tolerated to leave
 time_start = 0
@@ -18,6 +19,7 @@ validate = True
 img_open_main = None
 img_main = None
 btn_index_main = 0
+BTN_ALL = Config.PREDICTION_POINTS_NUM
 btn_list = []
 gaze = GazeTracking()
 video = Video()
@@ -37,10 +39,10 @@ def adjust_threshold(frame):
     # histogram_dis = adaptive_histogram_equalization(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
     small_frame = cv2.resize(frame, (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
 
-    cv2.imshow('hist', small_frame)
-    cv2.waitKey(1)
+    # cv2.imshow('hist', small_frame)
+    # cv2.waitKey(1)
     # Find all the faces and face encodings in the current frame of video
-    face_locations = face_recognition.face_locations(small_frame)
+    face_locations = face_recognition.face_locations(small_frame, model='cnn')
 
     # Display the results
     for top, right, bottom, left in face_locations:
@@ -79,14 +81,12 @@ def create():
     global canvas
     frame = canvas
 
-    # 创建一个Canvas，设置其背景色为白色
-    # cv = Canvas(root, bg='white', height=screen_height, width=screen_width)
     d = Config.CALIBRATION_POINTS_INTERVAL_EDGE
     w = Config.CALIBRATION_POINTS_WIDTH
     h = Config.CALIBRATION_POINTS_HEIGHT
     print('createBtn...')
-    x = f(btn_index_main) * (screen_width - 2 * d) / (COL_POINT - 1) + d
-    y = g(btn_index_main) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
+    x = random.randint(0, screen_width)
+    y = random.randint(0, screen_height)
     point_list.append((x, y))
     evaluate = Evaluate(x, y)
     img_open_main = Image.open('../res/button_img.jpg')
@@ -104,8 +104,8 @@ def predict(evaluate):
     global btn_index_main
     global average_accuracy
     points_list = []  # 所有预测成功的点
-    dist_list = []
-    num = Video.fps
+    dist_list = []  # 预测点到真实点的距离
+    num = Video.fps * 2  # 每一个真实注视点捕获帧数
     missed_num = 0
     i = 0
     while i < num:

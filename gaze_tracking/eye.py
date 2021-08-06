@@ -14,7 +14,7 @@ class Eye(object):
 
     LEFT_EYE_POINTS = [36, 37, 38, 39, 40, 41]
     RIGHT_EYE_POINTS = [42, 43, 44, 45, 46, 47]
-
+    cnt = 0
     def __init__(self, original_frame, landmarks, side, calibration, option):
         self.frame = None
         self.origin = None
@@ -92,16 +92,18 @@ class Eye(object):
 
         # Cropping on the eye
         margin = 5
-        min_x = np.min(region[:, 0]) - margin
-        max_x = np.max(region[:, 0]) + margin
+        min_x = np.min(region[:, 0])
+        max_x = np.max(region[:, 0])
         min_y = np.min(region[:, 1]) - margin
         max_y = np.max(region[:, 1]) + margin
 
         self.frame = eye[min_y:max_y, min_x:max_x]
+        cv2.imwrite('../image/' + str(self.cnt) + '.jpg', self.frame)
+        Eye.cnt += 1
         self.origin = (min_x, min_y)
 
         height, width = self.frame.shape[:2]
-        self.center = (width / 2, height / 2)
+        self.center = (width / 2 - 0.5, height / 2 - 0.5)
 
     def _blinking_ratio(self, landmarks, points):
         """Calculates a ratio that can indicate whether an eye is closed or not.
@@ -156,8 +158,14 @@ class Eye(object):
         self.pupil = Pupil(self.frame, threshold)
 
     def find_pupil(self, original_frame, landmarks, side, calibration):
-
+        #  original_frame是眼睛的灰度图像（矩形）
         self.isolate_eye(original_frame, landmarks)
+        #  内眼角点
+        # x, y = landmarks[0]
+        # inner_eye = original_frame[y - 1:y + 1, x:x + 3]
+        # inner_eye_gray = np.mean(np.array(inner_eye))
+        # threshold = inner_eye_gray
+        # print('innerEyeGray= ', threshold)
         threshold = Calibration.best_thres
         self.pupil = Pupil(self.frame, threshold)
 

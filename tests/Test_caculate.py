@@ -1,19 +1,62 @@
-x = [3, -2, -5, 4, 0, -5, 2, -2, -4]
-y = [-2, -3, -3, -1, -1, -1, -1, -1, -1]
-Z = [50, 768, 1486, 50, 768, 1486, 50, 768, 1486]
-result = []
-for i in range(9):
-    z = +6.636 * x[i] ** 2 + 11.78 * x[i] * y[i] - 78.20 * y[i] ** 2 - 157.5 * x[i] - 213.1 * y[i] + 420.0
-    result.append(format(z, ".2f"))
-print(result)
+import cv2 as cv
+import matplotlib.pyplot as plt
+import numpy as np
 
-# import matlab
-# import matlab.engine
-# import numpy as np
-# from pylab import *
-#
-# if __name__ == '__main__':
-#     engine = matlab.engine.start_matlab() #启动matlab
-#     print(engine.result())
-#     a = engine.result().sqrt(matlab.double([1.,2.,3.,4.,5.]))
-#     print(a)
+from core import FixationPoint_Standardization
+
+def histequ(gray, nlevels=256):
+    # Compute histogram
+    histogram = np.bincount(gray.flatten(), minlength=nlevels)
+    print ("histogram: ", histogram)
+
+    # Mapping function
+    uniform_hist = (nlevels - 1) * (np.cumsum(histogram)/(gray.size * 1.0))
+    uniform_hist = uniform_hist.astype('uint8')
+    print ("uniform hist: ", uniform_hist)
+
+    # Set the intensity of the pixel in the raw gray to its corresponding new intensity
+    height, width = gray.shape
+    uniform_gray = np.zeros(gray.shape, dtype='uint8')  # Note the type of elements
+    for i in range(height):
+        for j in range(width):
+            uniform_gray[i,j] = uniform_hist[gray[i,j]]
+
+    return uniform_gray
+
+if __name__ == '__main__':
+    img = cv.imread('../image/0.jpg')
+    img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    h, w = img.shape[:2]
+    print(img[h//2][w//4*3])
+    hist = cv.calcHist([img], [0], None, [256], [0, 256])
+    # 画出直方图
+    plt.figure()
+    plt.title("Grayscale Histogram")
+    plt.xlabel("Bins")
+    plt.ylabel("number of Pixels")
+    plt.plot(hist)
+    plt.xlim([0, 256])
+    plt.show()
+
+    # dst = FixationPoint_Standardization.adaptive_histogram_equalization(img)
+    dst = cv.equalizeHist(img)
+    hist1 = cv.calcHist([dst], [0], None, [256], [0, 256])
+    # 画出直方图
+    plt.figure()
+    plt.title("adaptive_histogram_equalization Histogram")
+    plt.xlabel("Bins")
+    plt.ylabel("number of Pixels")
+    plt.plot(hist1)
+    plt.xlim([0, 256])
+    plt.show()
+
+    ret, img1 = cv.threshold(img, 65, 255, cv.THRESH_BINARY)
+    kernel = np.ones((2, 2), np.uint8)
+    img1 = cv.erode(img1, kernel, iterations=2)
+
+    # imgs = np.hstack([img, dst])
+    cv.imshow('img', img)
+    cv.imshow('dst', dst)
+    cv.imshow('img1', img1)
+
+    cv.waitKey(1)

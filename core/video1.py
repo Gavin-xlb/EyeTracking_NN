@@ -8,7 +8,7 @@ import cv2
 # specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
 
 # Get a reference to webcam #0 (the default one)
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(1)
 
 # Initialize some variables
 face_locations = []
@@ -37,7 +37,7 @@ while True:
         for face_landmarks in face_landmarks_list:
             left_x_min, left_y_min = 500, 500
             left_x_max, left_y_max = 0, 0
-            for x, y in face_landmarks['left_eye']:
+            for x, y in face_landmarks['right_eye']:
                 if x < left_x_min:
                     left_x_min = x
                 elif x > left_x_max:
@@ -55,20 +55,22 @@ while True:
             thresh = cv2.erode(thresh, kernel)
             contours, hierarchy = cv2.findContours(thresh, 1, 2)
             #thresh_2 = cv2.drawContours(thresh, contours, -1, (0, 0, 255), 5)
-            cnt = contours[-1]
-            M = cv2.moments(cnt)
-            if M['m00'] != 0:
-                cx = int(M['m10'] / M['m00'])
-                cy = int(M['m01'] / M['m00'])
-                CG = (cx, cy)
-                print('ECCG: ', CG[0] - EC[0], CG[1] - EC[1])
-            cv2.imshow('asd', thresh)
-            # cv2.imshow("try", left_eye)
-            # Let's trace out each facial feature in the image with a line!
-            for facial_feature in face_landmarks.keys():
-                # print(facial_feature, face_landmarks[facial_feature])
-                for point in face_landmarks[facial_feature]:
-                    cv2.circle(face_image, point, 0, (0, 0, 255), 5)
+            if len(contours) > 0:
+                contours = sorted(contours, key=cv2.contourArea)
+                cnt = contours[-1]
+                M = cv2.moments(cnt)
+                if M['m00'] != 0:
+                    cx = int(M['m10'] / M['m00'])
+                    cy = int(M['m01'] / M['m00'])
+                    CG = (cx, cy)
+                    print('ECCG: ', CG[0] - EC[0], CG[1] - EC[1])
+                cv2.imshow('asd', thresh)
+                # cv2.imshow("try", left_eye)
+                # Let's trace out each facial feature in the image with a line!
+                for facial_feature in face_landmarks.keys():
+                    # print(facial_feature, face_landmarks[facial_feature])
+                    for point in face_landmarks[facial_feature]:
+                        cv2.circle(face_image, point, 0, (0, 0, 255), 3)
 
         # Put the blurred face region back into the frame image
 
