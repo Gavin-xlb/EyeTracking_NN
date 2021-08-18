@@ -2,57 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="adapter threshold has completed!">
-      <change afterPath="$PROJECT_DIR$/core/CalibrationHelper.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Distortion.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/ShotPic.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Test_distortion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/calibration.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/fonts/glyphicons-halflings-regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/calibration.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/precision_calculation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/third-party/bootstrap.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/third-party/html2canvas.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/third-party/jquery.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/third-party/sweetalert.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/javascript/third-party/webgazer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/saveDots.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/stylesheet/bootstrap.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/stylesheet/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/videos/10_mayo_volkswagen.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/准确率照片.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebGazer/未检测到人脸.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Draw3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Draw3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Evaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Evaluate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/ScreenHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/ScreenHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Surface_fitting.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Surface_fitting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/video1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/video1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/calibration.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/calibration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/eye.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/eye.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gaze_tracking/pupil.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/pupil.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/predictInfo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/predictInfo.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/start.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Background_display.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_Frame.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_canvas.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_fileIO.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_github.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_list.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_ppi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Test_surface_fitting.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_surface_fitting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Testgui.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_fitting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_svr.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -366,7 +316,7 @@
       <workItem from="1628818405349" duration="6740000" />
       <workItem from="1629077471818" duration="13814000" />
       <workItem from="1629179460168" duration="5198000" />
-      <workItem from="1629253471504" duration="8455000" />
+      <workItem from="1629253471504" duration="9888000" />
     </task>
     <task id="LOCAL-00001" summary="adapter threshold has completed!">
       <created>1626446827356</created>
