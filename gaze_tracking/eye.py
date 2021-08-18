@@ -19,6 +19,7 @@ class Eye(object):
         self.frame = None
         self.origin = None
         self.center = None
+        self.top2bottom = None
         self.pupil = None
 
         # self._analyze(original_frame, landmarks, side, calibration)
@@ -83,6 +84,10 @@ class Eye(object):
         region = np.array(landmarks)
         region = region.astype(np.int32)
 
+        dst1 = region[5][1] - region[1][1]
+        dst2 = region[4][1] - region[2][1]
+        self.top2bottom = (dst1 + dst2) / 2
+
         # Applying a mask to get only the eye
         height, width = frame.shape[:2]
         black_frame = np.zeros((height, width), np.uint8)
@@ -98,12 +103,13 @@ class Eye(object):
         max_y = np.max(region[:, 1]) + margin
 
         self.frame = eye[min_y:max_y, min_x:max_x]
-        cv2.imwrite('../image/' + str(self.cnt) + '.jpg', self.frame)
+        cv2.imwrite('../image/gray_eye/' + str(self.cnt) + '.jpg', self.frame)
         Eye.cnt += 1
         self.origin = (min_x, min_y)
 
         height, width = self.frame.shape[:2]
         self.center = (width / 2 - 0.5, height / 2 - 0.5)
+        print('center:', self.center)
 
     def _blinking_ratio(self, landmarks, points):
         """Calculates a ratio that can indicate whether an eye is closed or not.
@@ -157,7 +163,13 @@ class Eye(object):
         threshold = calibration.threshold(side)
         self.pupil = Pupil(self.frame, threshold)
 
-    def find_pupil(self, original_frame, landmarks, side, calibration):
+    def find_pupil(self, original_frame, landmarks):
+        """寻找虹膜/瞳孔
+
+        :param original_frame: 捕获原图像
+        :param landmarks: 眼睛区域特征点
+        :return:
+        """
         #  original_frame是眼睛的灰度图像（矩形）
         self.isolate_eye(original_frame, landmarks)
         #  内眼角点
@@ -170,6 +182,14 @@ class Eye(object):
         self.pupil = Pupil(self.frame, threshold)
 
     def adjust_threshold(self, original_frame, landmarks, side, calibration):
+        """自适应阈值计算
+
+        :param original_frame: 捕获原图像
+        :param landmarks: 眼睛区域特征点
+        :param side: 左/右眼
+        :param calibration: 标定对象
+        :return:
+        """
         self.isolate_eye(original_frame, landmarks)
         if not calibration.is_complete():
             calibration.evaluate(self.frame, side)

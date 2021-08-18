@@ -4,6 +4,9 @@ import math
 
 
 class ScreenHelper:
+    """获取屏幕相关的信息
+
+    """
     def __init__(self):
         PATH = "SYSTEM\\ControlSet001\\Enum\\"
         m = wmi.WMI()

@@ -1,6 +1,9 @@
 import cv2
 import face_recognition
 import numpy as np
+
+from core.CalibrationHelper import CalibrationHelper
+from core.Distortion import Distortion
 from gaze_tracking import GazeTracking
 from core.Config import Config
 from core import FixationPoint_Standardization
@@ -14,26 +17,18 @@ gaze = GazeTracking()
 
 
 class Video(object):
+    """预测时计算EC-CG、计算预测落点
+
+    """
     video_capture = cv2.VideoCapture(Config.TYPE_CAMERA)
     fps = video_capture.get(cv2.CAP_PROP_FPS)
 
-    def rectangle_eye(self, eye_point_list):
-        x_min = eye_point_list[0][0]
-        x_max = eye_point_list[0][0]
-        y_min = eye_point_list[0][1]
-        y_max = eye_point_list[0][1]
-        for point in eye_point_list:
-            if point[0] < x_min:
-                x_min = point[0]
-            if point[0] > x_max:
-                x_max = point[0]
-            if point[1] < y_min:
-                y_min = point[1]
-            if point[1] > y_max:
-                y_max = point[1]
-        return x_min, x_max, y_min, y_max
 
     def caculate_eccg(self):
+        """计算EC-CG
+
+        :return: (tuple)EC-CG
+        """
         # the number of frames per eye_point
         frame_num = 1
         i = 0
@@ -44,6 +39,7 @@ class Video(object):
         while i < frame_num:
             # Grab a single frame of video
             ret, f = self.video_capture.read()
+            # f = Distortion.dedistortion(f)
             # pre_frame.append(f)
             # f = FixationPoint_Standardization.adaptive_histogram_equalization(
             #     cv2.cvtColor(f, cv2.COLOR_BGR2GRAY))
@@ -60,6 +56,8 @@ class Video(object):
         pupil_list = []
         EC = []
         CG = []
+        top2bottom_list = []
+        face_image = None
         while i < frame_num:
             # Find all the faces and face encodings in the current frame of video
             face_locations = face_recognition.face_locations(small_frame[i], model='cnn')
@@ -82,43 +80,52 @@ class Video(object):
                         if facial_feature == 'right_eye':
                             right_eye_point = face_landmarks[facial_feature]
 
-                            gaze = GazeTracking()
                             gaze.find_iris(face_image, right_eye_point, 1, 1)
-                            frame1 = gaze.annotated_frame(frame[i][top:bottom, left:right])
-                            cv2.imshow('frame_prediction', frame1)
+                            for point in right_eye_point:
+                                cv2.circle(face_image, point, 0, (0, 0, 255), 3)
                             right_eye = gaze.eye_right
                             if right_eye is not None:
-                                ec = right_eye.center
-                                cg = (right_eye.pupil.x, right_eye.pupil.y)
-                                if ec is None or ec[0] is None or ec[1] is None or cg is None or cg[0] is None or cg[1] is None:
-                                    return ()
-                                EC.append(ec)
+                                # ec = right_eye.center
+                                cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
+                                if cg is None or cg[0] is None or cg[1] is None:
+                                    break
+                                # EC.append(ec)
                                 CG.append(cg)
-                                print('ec=', ec)
+                                temp_dst = right_eye.top2bottom
+                                top2bottom_list.append(temp_dst)
+                                # print('ec=', ec)
                                 print('cg=', cg)
 
                             num += 1
             i += 1
         # shot successfully
         if (i == frame_num) and (num != 0):
-            x = 0
-            y = 0
-            for t in EC:
-                x += t[0]
-                y += t[1]
-            ec = (x / num, y / num)
+            p = 0
+            for d in top2bottom_list:
+                p += d
+            avg_dst = p / num
             x = 0
             y = 0
             for t in CG:
                 x += t[0]
                 y += t[1]
-            cg = (x / num, y / num)
-            EC_CG = (round((cg[0] - ec[0])*Config.eccg_magnify_times, 2), round((cg[1] - ec[1])*Config.eccg_magnify_times, 2))
+            delta_dst = avg_dst - CalibrationHelper.top2bottomDist
+            cg = (x / num, y / num + delta_dst)
+            EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))
+            frame1 = gaze.annotated_frame(face_image, delta_dst)
+            cv2.imshow('frame_prediction', frame1)
+            cv2.imwrite('../image/prediction/' + str(EC_CG) + '.jpg', frame1)
             return EC_CG
         else:
             return ()
 
     def caculatePointAndDisplay(self, A, B):
+        """计算预测落点坐标
+
+        :param A: (a0, a1, a2, a3, a4, a5)
+        :param B: (b0, b1, b2, b3, b4, b5)
+        :return: (tuple)预测落点坐标
+        """
         '''
         Z_screenX = a0  * x ^ 2 + a1 * x * y + a2 * y ^ 2 + a3 * x + a4 * y + a5
         Z_screenY = b0  * x ^ 2 + b1 * x * y + b2 * y ^ 2 + b3 * x + b4 * y + b5

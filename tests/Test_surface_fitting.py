@@ -129,8 +129,8 @@ if __name__ == '__main__':
     # matching_3D(X, Y, Z_x)
     # matching_3D(X, Y, Z_y)
 
-    Draw3D.drawScatterMap(X, Y, Z_x, 'x')
-    Draw3D.drawScatterMap(X, Y, Z_y, 'y')
+    Draw3D.drawMap(X, Y, Z_x, 'x')
+    Draw3D.drawMap(X, Y, Z_y, 'y')
 
     # Z = [50, 50, 50, 432, 432, 432, 814, 814, 814]
     # matching_3D(X, Y, Z)

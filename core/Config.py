@@ -2,8 +2,10 @@ import math
 
 
 class Config(object):
+    """该类包括了一些程序的常量、全局参数
+    """
     # 摄像头类型 0:自带摄像头;1:外设
-    TYPE_CAMERA = 1
+    TYPE_CAMERA = 0
     # 平均瞳孔半径
     AVERAGE_PUPIL_RADIUS = 8
     # 标定点总数
@@ -24,3 +26,7 @@ class Config(object):
     VALIDATE_INTERVAL = 5  # 5s your eyes can be tolerated to leave
     # EC_CG放大倍数
     eccg_magnify_times = 1
+    # tuple width*height
+    Distortion_inter_corner_shape = (11, 8)
+    # int 现实世界里一格多少距离(单位:米)
+    Distortion_size_per_grid = 0.02

@@ -12,6 +12,14 @@ def fun(x):
 
 
 def get_res(X, Y, Z, n):
+    """最小二乘法求系数
+
+    :param X: (list)EC
+    :param Y: (list)CG
+    :param Z: 屏幕横坐标/屏幕纵坐标
+    :param n: 维数
+    :return: 拟合函数的系数
+    """
     # 求方程系数
     sigma_x = 0
     for i in X: sigma_x += i
@@ -69,9 +77,16 @@ def get_res(X, Y, Z, n):
     return res
 
 def matching_3D(X, Y, Z):
+    """计算拟合函数的系数
+
+    :param X: (list)EC
+    :param Y: (list)CG
+    :param Z: 屏幕横坐标/屏幕纵坐标
+    :return: 拟合函数的系数
+    """
     n = len(X)
     res = get_res(X, Y, Z, n)
     # 输出方程形式
-    print("z=%.6s*x^2%.6s*xy%.6s*y^2%.6s*x%.6s*y%.6s" % (
+    print("z=%.6s* (mesh_x .* mesh_x)%.6s*(mesh_x .* mesh_y)%.6s*( mesh_y .* mesh_y )%.6s*mesh_x%.6s*mesh_y%.6s" % (
     fun(res[0]), fun(res[1]), fun(res[2]), fun(res[3]), fun(res[4]), fun(res[5])))
     return [res[0], res[1], res[2], res[3], res[4], res[5]]

@@ -8,6 +8,8 @@ import _thread
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from PIL import ImageTk, Image
 
+from core.CalibrationHelper import CalibrationHelper
+from core.Distortion import Distortion
 from core.Draw3D import Draw3D
 
 from sklearn.metrics import precision_score
@@ -35,6 +37,7 @@ CG_list = []
 gaze = GazeTracking()
 img_open = None
 img = None
+ec = None
 
 
 def f(i):
@@ -46,62 +49,52 @@ def g(i):
 
 
 def create_btn(cap, frame, screen_width, screen_height):
+    """产生按钮
+
+    :param cap: 相机对象
+    :param frame: 画布对象
+    :param screen_width: 屏幕宽度
+    :param screen_height: 屏幕高度
+    :return:
+    """
     global img_open
     global img
     global screenhelper
+    global btn_index
     PPI = screenhelper.getPPI()
     # 创建一个Canvas，设置其背景色为白色
     # cv = Canvas(root, bg='white', height=screen_height, width=screen_width)
     d = Config.CALIBRATION_POINTS_INTERVAL_EDGE
     w = Config.CALIBRATION_POINTS_WIDTH
     h = Config.CALIBRATION_POINTS_HEIGHT
+    center_index = Config.CALIBRATION_POINTS_NUM // 2
+    iscenter = False
     print('createBtn...')
-    x = f(btn_index) * (screen_width - 2 * d) / (COL_POINT - 1) + d
-    y = g(btn_index) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
+    if btn_index == 0:
+        iscenter = True
+        x = f(center_index) * (screen_width - 2 * d) / (COL_POINT - 1) + d
+        y = g(center_index) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
+    else:
+        iscenter = False
+        x = f(btn_index-1) * (screen_width - 2 * d) / (COL_POINT - 1) + d
+        y = g(btn_index-1) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
     point_list.append((x, y))
     img_open = Image.open('../res/button_img.jpg')
     img = ImageTk.PhotoImage(img_open)
     btn = Button(frame, width=w, height=h, image=img)
-    btn['command'] = lambda: shot(cap, frame, btn_list, screen_width, screen_height)
+    btn['command'] = lambda: shot(cap, frame, btn_list, screen_width, screen_height, iscenter)
     btn.place(x=(x - w / 2), y=(y - h / 2))
     frame.pack()
     btn_list.append(btn)
     return point_list, btn_list
 
-    # for i in range(9):
-    #     x = f(i) * (screen_width - 2 * d) / 2 + d
-    #     y = g(i) * (screen_height - 2 * d) / 2 + d
-    #     point_list.append((x, y))
-    #     if i == 0:
-    #         btn = Button(frame, width=w, height=h, text=i, bg='yellow', command=lambda: shot(cap, frame, btn_list))
-    #     else:
-    #         btn = Button(frame, width=w, height=h, text=i, bg='white', command=lambda: shot(cap, frame, btn_list))
-    #     btn.pack()
-    #     btn.place(x=(x - w / 2), y=(y - h / 2) - 20)
-    #     frame.pack()
-    #     btn_list.append(btn)
-    # return point_list, btn_list
-
-
-def rectangle_eye(eye_point_list):
-    x_min = eye_point_list[0][0]
-    x_max = eye_point_list[0][0]
-    y_min = eye_point_list[0][1]
-    y_max = eye_point_list[0][1]
-    for point in eye_point_list:
-        if point[0] < x_min:
-            x_min = point[0]
-        if point[0] > x_max:
-            x_max = point[0]
-        if point[1] < y_min:
-            y_min = point[1]
-        if point[1] > y_max:
-            y_max = point[1]
-    return x_min, x_max, y_min, y_max
-
 
 def adaptive_histogram_equalization(gray_image):
+    """对一幅灰度图像进行直方图均衡化
 
+    :param gray_image: 灰度图像
+    :return: 限制对比度的自适应阈值均衡化后的图像
+    """
     # 创建CLAHE对象
     clahe = cv2.createCLAHE(2.0, (8, 8))
     # 限制对比度的自适应阈值均衡化
@@ -109,19 +102,11 @@ def adaptive_histogram_equalization(gray_image):
     return dst
 
 
-def histeq(im, nbr_bins=256):
-    """对一幅灰度图像进行直方图均衡化"""
-    # 计算图像的直方图
-    # 在numpy中，也提供了一个计算直方图的函数histogram(),第一个返回的是直方图的统计量，第二个为每个bins的中间值
-    imhist, bins = np.histogram(im.flatten(), nbr_bins, density=True)
-    cdf = imhist.cumsum()   #
-    cdf = 255.0 * cdf / cdf[-1]
-    # 使用累积分布函数的线性插值，计算新的像素值
-    im2 = np.interp(im.flatten(), bins[:-1], cdf)
-    return im2.reshape(im.shape), cdf
-
-
 def get_relationship_eye_screenpoint():
+    """将EC-CG向量和屏幕坐标的关系写入文件
+
+    :return: None
+    """
     # input dict into txt
     fo = open("../res/ECCG_screenPoint.txt", "w")
     for i in range(len(ECCG_list)):
@@ -132,6 +117,10 @@ def get_relationship_eye_screenpoint():
 
 # 最小二乘
 def caculateCoeficiente():
+    """最小二乘法拟合函数
+
+    :return: A,B
+    """
     '''
         Z_screenX = a0  * x ^ 2 + a1 * x * y + a2 * y ^ 2 + a3 * x + a4 * y + a5
         Z_screenY = b0  * x ^ 2 + b1 * x * y + b2 * y ^ 2 + b3 * x + b4 * y + b5
@@ -148,11 +137,11 @@ def caculateCoeficiente():
 
     # 离散点和拟合函数可视化
     # 拟合注视点横坐标
-    Draw3D.drawScatterMap(X, Y, Z_screenX, 'x')
+    Draw3D.drawMap(X, Y, Z_screenX, 'x')
     # Draw3D.drawSurfaceMap(A, 'x')
     # Draw3D.drawWireFrameMap(A, 'x')
     # 拟合注视点纵坐标
-    Draw3D.drawScatterMap(X, Y, Z_screenY, 'y')
+    Draw3D.drawMap(X, Y, Z_screenY, 'y')
     # Draw3D.drawSurfaceMap(B, 'y')
     # Draw3D.drawWireFrameMap(B, 'y')
 
@@ -161,6 +150,10 @@ def caculateCoeficiente():
 
 # SVR
 def caculateCoeficiente_SVR():
+    """SVR算法拟合函数
+
+    :return: clf_x, clf_y
+    """
     print("strat fitting.....")
     if len(ECCG_list) < BTN_ALL:
         return None, None
@@ -182,6 +175,10 @@ def caculateCoeficiente_SVR():
 
 # RandomForestClassifier
 def caculateCoeficiente_RF():
+    """随机森林算法拟合函数
+
+    :return: rfc_x, rfc_y
+    """
     if len(ECCG_list) < BTN_ALL:
         return None, None
     eccgpoint = np.array([x for x in ECCG_list])
@@ -189,9 +186,9 @@ def caculateCoeficiente_RF():
     Z_screenY = np.array([x[1] for x in point_list])
     print("X: ", eccgpoint)
     print("Y: ", Z_screenX)
-    rfc_x = RandomForestRegressor(n_estimators=50,random_state=1)
+    rfc_x = RandomForestRegressor(n_estimators=50, random_state=1)
     rfc_x.fit(eccgpoint, Z_screenX)
-    rfc_y = RandomForestRegressor(n_estimators=50,random_state=1)
+    rfc_y = RandomForestRegressor(n_estimators=50, random_state=1)
     rfc_y.fit(eccgpoint, Z_screenY)
 
     # y_predict = rfc_x.predict(eccgpoint)
@@ -203,6 +200,11 @@ def caculateCoeficiente_RF():
 
 
 def find_max_region(mask_sel):
+    """二值化图像找最大连通域
+
+    :param mask_sel: 二值化图像
+    :return: 最大连通域
+    """
     contours, hierarchy = cv2.findContours(mask_sel, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
     # 找到最大区域并填充
@@ -222,17 +224,20 @@ def find_max_region(mask_sel):
     return mask_sel
 
 
-def interrupt_mainThread():
-    try:
-        _thread.interrupt_main()
-    except KeyboardInterrupt:
-        print('Exception:KeyboardInterrupt')
+def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscenter):
+    """视线标定
 
-
-def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
+    :param video_capture: 相机对象
+    :param frame_WIN: 画布对象
+    :param btn_list: 按钮列表
+    :param screen_width: 屏幕宽度
+    :param screen_height: 屏幕高度
+    :param iscenter: 是否是屏幕中心点
+    :return:
+    """
     # _thread.start_new_thread(interrupt_mainThread, ())
     # global index
-    global btn_index
+    global btn_index, ec
 
     print('photo ' + str(btn_index) + ' is proccessing...')
     # the number of frames per eye_point
@@ -247,6 +252,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
         if i % frame_interval == 0:
             # Grab a single frame of video
             ret, f = video_capture.read()
+            # f = Distortion.dedistortion(f)
             # pre_frame.append(f)
             # f = adaptive_histogram_equalization(cv2.cvtColor(f, cv2.COLOR_BGR2GRAY))
             frame.append(f)
@@ -261,7 +267,10 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
     num = 0
     EC = []
     CG = []
-
+    top2bottom_list = []
+    temp_ec = None
+    face_image = None
+    # frame2 = None
     while j < frame_num:
         # Find all the faces and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(small_frame[j], model='cnn')
@@ -287,49 +296,80 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
                         right_eye_point = face_landmarks[facial_feature]
                         print(facial_feature, face_landmarks[facial_feature])
 
-                        gaze = GazeTracking()
                         gaze.find_iris(face_image, right_eye_point, 1, 1)
-                        frame1 = gaze.annotated_frame(frame[j][top:bottom, left:right])
-                        cv2.imshow('frame_calibration', frame1)
+                        # 画出眼睛的6个点
+                        for point in right_eye_point:
+                            cv2.circle(face_image, point, 0, (0, 0, 255), 3)
+
                         right_eye = gaze.eye_right
                         if right_eye is not None:
-                            ec = right_eye.center
-                            cg = (right_eye.pupil.x, right_eye.pupil.y)
-                            if ec is None or ec[0] is None or ec[1] is None or cg is None or cg[0] is None or cg[1] is None:
-                                return ()
-                            EC.append(ec)
+                            if iscenter:
+                                # 如果标定点是屏幕中点，则需要计算EC
+                                temp_ec = right_eye.center
+
+                            cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
+                            if cg is None or cg[0] is None or cg[1] is None:
+                                break
+                            if iscenter:
+                                # temp_ec = cg
+                                EC.append(temp_ec)
                             CG.append(cg)
-                            print('ec=', ec)
-                            print('cg=', cg)
+                            temp_dst = right_eye.top2bottom
+                            top2bottom_list.append(temp_dst)
+
                             num += 1
+
+                            break
         j += 1
+    # num为虹膜二值化成功的次数，并非人眼检测成功的次数
     print('num=', num)
     # shot successfully
-    if (j == frame_num) and (num > 1):
-        x = 0
-        y = 0
-        for t in EC:
-            x += t[0]
-            y += t[1]
-        ec = (x / num, y / num)
+    if (j == frame_num) and (num > 0):
+        p = 0
+        for d in top2bottom_list:
+            p += d
+        avg_dst = p / num
+        print('avg_dst=', avg_dst)
+        if iscenter:
+            x = 0
+            y = 0
+            for t in EC:
+                x += t[0]
+                y += t[1]
+            ec = (x / num, y / num)
+            print('ec=', ec)
+            CalibrationHelper.ec_x = ec[0]
+            CalibrationHelper.ec_y = ec[1]
+            CalibrationHelper.top2bottomDist = avg_dst
         x = 0
         y = 0
         for t in CG:
             x += t[0]
             y += t[1]
-        cg = (x / num, y / num)
+        delta_dst = avg_dst - CalibrationHelper.top2bottomDist
+        cg = (x / num, y / num + delta_dst)
+        print('cg=', cg)
 
-        EC_CG = (round((cg[0] - ec[0])*Config.eccg_magnify_times, 2), round((cg[1] - ec[1])*Config.eccg_magnify_times, 2))
+        EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))
         print('EC_CG:', EC_CG)
 
         ECCG_list.append(EC_CG)
 
+        frame1 = gaze.annotated_frame(face_image, delta_dst)
+        cv2.imshow('frame_calibration', frame1)
+        cv2.imwrite('../image/calibration/' + str(btn_index) + str(EC_CG) + '.jpg', frame1)
+
         # 成功录入btn_index才会+1
-        btn_list[btn_index].destroy()  # delete button which has been clicked just now
+        if btn_index > Config.CALIBRATION_POINTS_NUM // 2 + 1:
+            btn_list[btn_index - 1].destroy()
+        else:
+            btn_list[btn_index].destroy()  # delete button which has been clicked just now
         btn_index += 1
-        if btn_index < BTN_ALL:
+        if btn_index == Config.CALIBRATION_POINTS_NUM // 2 + 1:
+            btn_index += 1
+        if btn_index <= BTN_ALL:
             create_btn(video_capture, frame_WIN, screen_width, screen_height)
-        if btn_index == BTN_ALL:
+        if btn_index > BTN_ALL:
             result = tkinter.messagebox.showinfo('提示', '注定点标定结束!')
             # get the relationship between eye and screenpoint
             get_relationship_eye_screenpoint()
@@ -337,8 +377,3 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height):
                 tkinter.messagebox.showinfo('提示', '视线追踪开始!')
     else:
         tkinter.messagebox.showinfo('提示', '未成功录入此注视点，请重新点击!')
-
-
-
-
-

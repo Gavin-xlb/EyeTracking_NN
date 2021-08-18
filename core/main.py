@@ -24,8 +24,17 @@ btn_list = []
 gaze = GazeTracking()
 video = Video()
 average_accuracy = 0
+label = None
+Distortion.inter_corner_shape = Config.Distortion_inter_corner_shape
+Distortion.size_per_grid = Config.Distortion_size_per_grid
 
 def isValidate(x, y):
+    """判断视线落点是否在合法区域内
+
+    :param x: 预测点横坐标
+    :param y: 预测点纵坐标
+    :return: 是否合法
+    """
     validate_x1 = screen_width / 6
     validate_y1 = screen_height / 6
     validate_x2 = screen_width / 6 * 5
@@ -36,6 +45,11 @@ def isValidate(x, y):
 
 
 def adjust_threshold(frame):
+    """自适应调整虹膜二值化阈值
+
+    :param frame: 原图像
+    :return: None
+    """
     # histogram_dis = adaptive_histogram_equalization(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
     small_frame = cv2.resize(frame, (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
 
@@ -76,6 +90,10 @@ def destroy():
 
 
 def create():
+    """随机生成注视点
+
+    :return: None
+    """
     global img_open_main
     global img_main
     global canvas
@@ -100,6 +118,11 @@ def create():
 
 
 def predict(evaluate):
+    """针对每一个注视点进行预测
+
+    :param evaluate: 对该注视点的预测点进行的评估对象
+    :return: None
+    """
     global label
     global btn_index_main
     global average_accuracy
@@ -189,6 +212,12 @@ def displayTitle():
 
 
 def output_predictInfo(evaluate, points_list):
+    """将预测结果写入文件
+
+    :param evaluate: 评估结果
+    :param points_list: 注视点坐标列表
+    :return: None
+    """
     points = ''
     for row in range(len(points_list)):
         points += ',('+str(points_list[row][0])+','+str(points_list[row][1])+')'
@@ -202,7 +231,7 @@ def output_predictInfo(evaluate, points_list):
 
 if __name__ == '__main__':
     displayTitle()
-
+    Distortion.calib('../image/distortion_img', 'png')
     print('fps=', Video.fps)
     root = Tk('eye_Tracking')
     # get screen information
@@ -239,6 +268,7 @@ if __name__ == '__main__':
     while True:
 
         _, pic = Video.video_capture.read()
+        # pic = Distortion.dedistortion(pic)
         cov = cv2.cvtColor(pic, cv2.COLOR_RGB2BGR)  # 初始图像是RGB格式，转换成BGR即可正常显示了
         img = Image.fromarray(cov).resize((screen_width, screen_height), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)

@@ -16,11 +16,13 @@ class Pupil(object):
     """
 
     def __init__(self, eye_frame, threshold):
-        self.iris_frame = None
-        self.threshold = threshold
-        self.x = None
-        self.y = None
-        self.radius = None
+        self.iris_frame = None  # 虹膜二值化图像
+        self.threshold = threshold  # 二值化阈值
+        self.x = None  # CG以眼睛区域左上角为坐标原点的横坐标
+        self.y = None  # CG以眼睛区域左上角为坐标原点的纵坐标
+        self.cg_x = None  # CG以眼睛区域左下角为坐标原点的横坐标
+        self.cg_y = None  # CG以眼睛区域左下角为坐标原点的纵坐标
+        self.radius = None  # 虹膜半径
 
         self.detect_iris(eye_frame)
 
@@ -73,6 +75,8 @@ class Pupil(object):
         #     x, y, radius = circles[0]
         self.x = round(x, 2)
         self.y = round(y, 2)
+        self.cg_x = round(x, 2)
+        self.cg_y = self.iris_frame.shape[0] - round(y, 2) - 1
 
         # radius = Config.AVERAGE_PUPIL_RADIUS
         self.radius = radius

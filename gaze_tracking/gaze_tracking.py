@@ -143,7 +143,7 @@ class GazeTracking(object):
             blinking_ratio = (self.eye_left.blinking + self.eye_right.blinking) / 2
             return blinking_ratio > 3.8
 
-    def annotated_frame(self, f):
+    def annotated_frame(self, f, delta):
         """Returns the main frame with pupils highlighted"""
         # frame = self.frame.copy()
         frame = f
@@ -158,9 +158,15 @@ class GazeTracking(object):
                 x_right, y_right, r_right = self.pupil_right_coords()
                 x_center = int(self.eye_right.center[0] + self.eye_right.origin[0])
                 y_center = int(self.eye_right.center[1] + self.eye_right.origin[1])
+                cg_x = x_right
+                cg_y = int(y_right - delta)
                 cv2.line(frame, (x_right - 5, y_right), (x_right + 5, y_right), color)
                 cv2.line(frame, (x_right, y_right - 5), (x_right, y_right + 5), color)
                 cv2.circle(frame, (x_right, y_right), int(r_right), (0, 255, 0), 1)
-                cv2.circle(frame, (x_center, y_center), 1, color, 1)
-
+                # EC
+                cv2.line(frame, (x_center - 3, y_center), (x_center + 3, y_center), (255, 255, 0), 1)
+                cv2.line(frame, (x_center, y_center - 3), (x_center, y_center + 3), (255, 255, 0), 1)
+                # CG
+                cv2.line(frame, (cg_x - 3, cg_y), (cg_x + 3, cg_y), (0, 255, 0), 1)
+                cv2.line(frame, (cg_x, cg_y - 3), (cg_x, cg_y + 3), (0, 255, 0), 1)
         return frame

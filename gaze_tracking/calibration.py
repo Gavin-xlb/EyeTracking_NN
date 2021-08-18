@@ -10,7 +10,7 @@ from gaze_tracking.pupil import Pupil
 
 class Calibration(object):
 
-    best_thres = 60
+    best_thres = 60  # 最佳阈值
 
     """
     This class calibrates the pupil detection algorithm by finding the
@@ -51,6 +51,8 @@ class Calibration(object):
         height, width = frame.shape[:2]
         nb_pixels = height * width
         nb_blacks = nb_pixels - cv2.countNonZero(frame)
+        if nb_pixels == 0:
+            return 0
         return nb_blacks / nb_pixels
 
     @staticmethod
