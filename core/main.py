@@ -1,3 +1,4 @@
+import datetime
 import math
 import random
 
@@ -21,12 +22,16 @@ img_main = None
 btn_index_main = 0
 BTN_ALL = Config.PREDICTION_POINTS_NUM
 btn_list = []
+label_list = []
 gaze = GazeTracking()
 video = Video()
 average_accuracy = 0
+average_accuracy_X = 0
+average_accuracy_Y = 0
 label = None
 Distortion.inter_corner_shape = Config.Distortion_inter_corner_shape
 Distortion.size_per_grid = Config.Distortion_size_per_grid
+present_time = datetime.datetime.now().strftime('%Y-%m-%d %Hh%Mm%Ss')
 
 def isValidate(x, y):
     """判断视线落点是否在合法区域内
@@ -89,6 +94,26 @@ def destroy():
     cv2.destroyAllWindows()
 
 
+def del_files(path_file):
+    ls = os.listdir(path_file)
+    for i in ls:
+        f_path = os.path.join(path_file, i)
+        # 判断是否是一个目录,若是,则递归删除
+        if os.path.isdir(f_path):
+            del_files(f_path)
+        else:
+            os.remove(f_path)
+
+
+def mkdir(path):
+    folder = os.path.exists(path)
+
+    if not folder:  # 判断是否存在文件夹如果不存在则创建为文件夹
+        os.makedirs(path)  # makedirs 创建文件时如果路径不存在会创建这个路径
+    else:
+        print(path + ' already exists!')
+
+
 def create():
     """随机生成注视点
 
@@ -123,24 +148,67 @@ def predict(evaluate):
     :param evaluate: 对该注视点的预测点进行的评估对象
     :return: None
     """
-    global label
+    global canvas
     global btn_index_main
     global average_accuracy
+    global average_accuracy_X
+    global average_accuracy_Y
+    global label_list
     points_list = []  # 所有预测成功的点
     dist_list = []  # 预测点到真实点的距离
-    num = Video.fps * 2  # 每一个真实注视点捕获帧数
+    points_list_X = []  # 所有横坐标预测成功的点
+    dist_list_X = []  # 预测点横坐标到真实点的距离
+    points_list_Y = []  # 所有纵坐标预测成功的点
+    dist_list_Y = []  # 预测点纵坐标到真实点的距离
+
+    critical = screen_height / 6
+
+    num = Video.fps * 4  # 每一个真实注视点捕获帧数
     missed_num = 0
     i = 0
+    title = 'screenPoint' + str(evaluate.screenX) + '_' + str(evaluate.screenY)
+    path = '../image/prediction/' + present_time + '/' + title
+    mkdir(path)
+    for lbl in label_list:
+        lbl.destroy()
+    label_list = []
     while i < num:
-        i += 1
-        point = video.caculatePointAndDisplay(A, B)
-        if point:
+        temp = video.caculatePointAndDisplay(A, B)
+        if temp:
+            point, result = temp
+        else:
+            point = None
+            result = None
+
+        if point and result:
             x_predict, y_predict = point
+            eccg, frame = result
+            cv2.imwrite(path + '/' + str(i) + str(eccg) + '_' + str(point) + '.jpg', frame)
+            cv2.imshow('frame_prediction', frame)
+            cv2.waitKey(1)
+
             points_list.append((x_predict, y_predict))
-            dist_list.append(math.sqrt(math.pow((x_predict - evaluate.screenX), 2) + math.pow((y_predict - evaluate.screenY), 2)))
+            points_list_X.append((x_predict, y_predict))
+            points_list_Y.append((x_predict, y_predict))
+            dist = math.sqrt(math.pow((x_predict - evaluate.screenX), 2) + math.pow((y_predict - evaluate.screenY), 2))
+            dist_list.append(dist)
+            dist_X = math.fabs(x_predict - evaluate.screenX)
+            dist_list_X.append(dist_X)
+            dist_Y = math.fabs(y_predict - evaluate.screenY)
+            dist_list_Y.append(dist_Y)
+            # color 代表的是预测点的接受状态，红色为不接受，绿色为接受，由于同一测试过程中同时评估X,Y,(X,Y)三种方案，
+            # 所以暂时以(X,Y)方案来决定预测点的显示状态,即下面距离用的是dist,而不是dist_X或者dist_Y
+            color = 'red' if dist > critical else 'green'
+            # if len(label_list) == num:
+            #     label_list[i]['bg'] = color
+            #     label_list[i].place(x=int(x_predict), y=int(y_predict))
+            # else:
+            label = Label(canvas, width=2, height=1, bg=color)
+            label_list.append(label)
             label.place(x=int(x_predict), y=int(y_predict))
         else:
             missed_num += 1
+        i += 1
         '''
         point = [video.geteccg()]
         if point[0]:
@@ -160,6 +228,7 @@ def predict(evaluate):
     evaluate.num = num
 
     if len(dist_list) > 2:
+        # (X,Y)同时考虑
         ma = max(dist_list)
         del points_list[dist_list.index(ma)]
         dist_list.remove(ma)
@@ -168,7 +237,6 @@ def predict(evaluate):
         del points_list[dist_list.index(mi)]
         dist_list.remove(mi)
 
-        critical = screen_height / 6
         print('critical=', critical)
         valid_points = []
         valid_dists = []
@@ -178,13 +246,51 @@ def predict(evaluate):
                 valid_points.append(points_list[i])
         evaluate.accept_num = len(valid_dists)
 
+        # 只考虑X
+        ma = max(dist_list_X)
+        del points_list_X[dist_list_X.index(ma)]
+        dist_list_X.remove(ma)
+
+        mi = min(dist_list_X)
+        del points_list_X[dist_list_X.index(mi)]
+        dist_list_X.remove(mi)
+
+        valid_points_X = []
+        valid_dists_X = []
+        for i in range(len(dist_list_X)):
+            if dist_list_X[i] <= critical:
+                valid_dists_X.append(dist_list_X[i])
+                valid_points_X.append(points_list_X[i])
+        evaluate.accept_num_X = len(valid_dists_X)
+
+        # 只考虑Y
+        ma = max(dist_list_Y)
+        del points_list_Y[dist_list_Y.index(ma)]
+        dist_list_Y.remove(ma)
+
+        mi = min(dist_list_Y)
+        del points_list_Y[dist_list_Y.index(mi)]
+        dist_list_Y.remove(mi)
+
+        valid_points_Y = []
+        valid_dists_Y = []
+        for i in range(len(dist_list_Y)):
+            if dist_list_Y[i] <= critical:
+                valid_dists_Y.append(dist_list_Y[i])
+                valid_points_Y.append(points_list_Y[i])
+        evaluate.accept_num_Y = len(valid_dists_Y)
+
         evaluate.caculate()
         average_accuracy += evaluate.acceptRatio
+        average_accuracy_X += evaluate.acceptRatio_X
+        average_accuracy_Y += evaluate.acceptRatio_Y
 
-        output_predictInfo(evaluate, valid_points)
+        output_predictInfo(evaluate, valid_points, valid_points_X, valid_points_Y)
 
         print('missRatio=', evaluate.missRatio)
         print('acceptRatio=', evaluate.acceptRatio)
+        print('acceptRatio_X=', evaluate.acceptRatio_X)
+        print('acceptRatio_Y=', evaluate.acceptRatio_Y)
 
         # 成功录入btn_index才会+1
         btn_list[btn_index_main].destroy()  # delete button which has been clicked just now
@@ -192,13 +298,17 @@ def predict(evaluate):
         if btn_index_main < BTN_ALL:
             create()
         else:
-            average_accuracy /= Config.CALIBRATION_POINTS_NUM
+            average_accuracy /= BTN_ALL
+            average_accuracy_X /= BTN_ALL
+            average_accuracy_Y /= BTN_ALL
             fo = open("../res/predictInfo.txt", "a+")
-
-            fo.write('%s=%s\n' % ('平均准确率', str(round(average_accuracy, 2))))
+            msg = '平均准确率=' + str(round(average_accuracy, 2)) + '\nX平均准确率=' + str(round(average_accuracy_X, 2)) + '\nY平均准确率=' + str(round(average_accuracy_Y, 2))
+            fo.write('%s\n' % msg)
             # 关闭打开的文件
             fo.close()
-            tkinter.messagebox.showinfo('提示', '预测结束!')
+            tkinter.messagebox.showinfo('提示', '预测结束!\n' + msg)
+            for lbl in label_list:
+                lbl.destroy()
     else:
         tkinter.messagebox.showinfo('提示', '预测失败，请重新预测!')
 
@@ -206,12 +316,12 @@ def predict(evaluate):
 def displayTitle():
     fo = open("../res/predictInfo.txt", "a+")
 
-    fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n' % ('屏幕坐标'.ljust(12), '错失率'.ljust(8), '接受率'.ljust(8), '错失数'.ljust(8), '接受数'.ljust(8), '总数'.ljust(8), '接受预测点坐标'))
+    fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n' % ('屏幕坐标'.ljust(12), '错失率'.ljust(8), '接受率'.ljust(8), 'X接受率'.ljust(8), 'Y接受率'.ljust(8), '错失数'.ljust(8), '接受数'.ljust(8), 'X接受数'.ljust(8), 'Y接受数'.ljust(8), '总数'.ljust(8), '接受预测点坐标', 'X接受预测点坐标', 'Y接受预测点坐标'))
     # 关闭打开的文件
     fo.close()
 
 
-def output_predictInfo(evaluate, points_list):
+def output_predictInfo(evaluate, points_list, points_list_X, points_list_Y):
     """将预测结果写入文件
 
     :param evaluate: 评估结果
@@ -221,17 +331,23 @@ def output_predictInfo(evaluate, points_list):
     points = ''
     for row in range(len(points_list)):
         points += ',('+str(points_list[row][0])+','+str(points_list[row][1])+')'
+    points_X = ''
+    for row in range(len(points_list_X)):
+        points_X += ',('+str(points_list_X[row][0])+','+str(points_list_X[row][1])+')'
+    points_Y = ''
+    for row in range(len(points_list_Y)):
+        points_Y += ',(' + str(points_list_Y[row][0]) + ',' + str(points_list_Y[row][1]) + ')'
     # input dict into txt
     fo = open("../res/predictInfo.txt", "a+")
 
-    fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n' % (('('+str(evaluate.screenX)+','+str(evaluate.screenY)+')').ljust(15), str(evaluate.missRatio).ljust(8), str(evaluate.acceptRatio).ljust(8), str(evaluate.missed_num).ljust(8), str(evaluate.accept_num).ljust(8), str(evaluate.num).ljust(8), points))
+    fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n' % (('('+str(evaluate.screenX)+','+str(evaluate.screenY)+')').ljust(15), str(evaluate.missRatio).ljust(8), str(evaluate.acceptRatio).ljust(8), str(evaluate.acceptRatio_X).ljust(8), str(evaluate.acceptRatio_Y).ljust(8), str(evaluate.missed_num).ljust(8), str(evaluate.accept_num).ljust(8), str(evaluate.accept_num_X).ljust(8), str(evaluate.accept_num_Y).ljust(8), str(evaluate.num).ljust(8), points, points_X, points_Y))
     # 关闭打开的文件
     fo.close()
 
 
 if __name__ == '__main__':
     displayTitle()
-    Distortion.calib('../image/distortion_img', 'png')
+    # Distortion.calib('../image/distortion_img', 'png')
     print('fps=', Video.fps)
     root = Tk('eye_Tracking')
     # get screen information
@@ -249,6 +365,9 @@ if __name__ == '__main__':
     root.resizable(width=False, height=False)
     # root.attributes("-topmost", True)
     root.overrideredirect(1)  # 去除标题栏
+
+    del_files('../image/calibration/')
+    mkdir('../image/prediction/' + present_time)
 
     flag = False
     A = []
@@ -294,65 +413,48 @@ if __name__ == '__main__':
             A, B = caculateCoeficiente()
         # if clf_x is not None:
         if A:
-            # flag = True
             predictBtn['command'] = lambda: create()
-            print("start predicting....")
+            # print("start predicting....")
             flag = True
-            # 随机森林
-            # point = [video.geteccg()]
-            # if point[0]:
+
+            # point = video.caculatePointAndDisplay(A, B)
+            # if point:
+            #     x_predict, y_predict = point
             #
-            #     print("point :", point)
-            #     x_predict = clf_x.predict(np.array(point))
-            #     y_predict = clf_y.predict(np.array(point))
-            #     label.pack()
-            point = video.caculatePointAndDisplay(A, B)
-            if point:
-                x_predict, y_predict = point
-
-                label.place(x=int(x_predict), y=int(y_predict))
-                if isValidate(x_predict, y_predict):
-                    validate = True
-                    canvas.itemconfig(sel, outline='green')
-                    text = ''
-                    canvas.create_text(250, 100, text=text)
-                else:
-                    if validate:
-                        time_start = time.time()
-                        time_end = time_start
-                    else:
-                        time_end = time.time()
-                    time_interval = time_end - time_start
-                    text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
-                    canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
-                    canvas.itemconfig(sel, outline='red')
-                    if time_interval > validate_interval:
-                        canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
-                        # result = tkinter.messagebox.showinfo('提示', '系统判定您在作弊，请停止作答!')
-                        # if result:
-                        #     video.video_capture.release()
-                        #     cv2.destroyAllWindows()
-                    validate = False
-
-                print("predictPoint:(%.2f,%.2f)" % (x_predict, y_predict))
-                label.place(x=int(x_predict), y=int(y_predict))
-            else:
-                if validate:
-                    time_start = time.time()
-                    time_end = time_start
-                else:
-                    time_end = time.time()
-                time_interval = time_end - time_start
-                text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
-                canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
-                canvas.itemconfig(sel, outline='red')
-                if time_interval > validate_interval:
-                    canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
-                    # result = tkinter.messagebox.showinfo('提示', '系统判定您在作弊，请停止作答!')
-                    # if result:
-                    #     video.video_capture.release()
-                    #     cv2.destroyAllWindows()
-                validate = False
+            #     label.place(x=int(x_predict), y=int(y_predict))
+            #     if isValidate(x_predict, y_predict):
+            #         validate = True
+            #         canvas.itemconfig(sel, outline='green')
+            #         text = ''
+            #         canvas.create_text(250, 100, text=text)
+            #     else:
+            #         if validate:
+            #             time_start = time.time()
+            #             time_end = time_start
+            #         else:
+            #             time_end = time.time()
+            #         time_interval = time_end - time_start
+            #         text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
+            #         canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
+            #         canvas.itemconfig(sel, outline='red')
+            #         if time_interval > validate_interval:
+            #             canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
+            #         validate = False
+            #
+            #     print("predictPoint:(%.2f,%.2f)" % (x_predict, y_predict))
+            # else:
+            #     if validate:
+            #         time_start = time.time()
+            #         time_end = time_start
+            #     else:
+            #         time_end = time.time()
+            #     time_interval = time_end - time_start
+            #     text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
+            #     canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
+            #     canvas.itemconfig(sel, outline='red')
+            #     if time_interval > validate_interval:
+            #         canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
+            #     validate = False
 
 
         # 更新界面

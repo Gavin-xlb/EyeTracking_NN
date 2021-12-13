@@ -26,7 +26,9 @@ outdir = r'D:\EyeTracking_NN-master\image'
 screenhelper = ScreenHelper()
 
 btn_index = 0
+epoch = 0
 BTN_ALL = Config.CALIBRATION_POINTS_NUM  # the number of points
+EPOCH_ALL = Config.CALIBRATION_EPOCH_NUM
 ROW_POINT = Config.CALIBRATION_POINTS_ROW
 COL_POINT = Config.CALIBRATION_POINTS_COL
 relationship_eye_screenpoint = {}  # EC-CG --> (screen_x, screen_y)
@@ -76,13 +78,14 @@ def create_btn(cap, frame, screen_width, screen_height):
         y = g(center_index) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
     else:
         iscenter = False
-        x = f(btn_index-1) * (screen_width - 2 * d) / (COL_POINT - 1) + d
-        y = g(btn_index-1) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
-    point_list.append((x, y))
+        x = f(btn_index - 1) * (screen_width - 2 * d) / (COL_POINT - 1) + d
+        y = g(btn_index - 1) * (screen_height - 2 * d) / (ROW_POINT - 1) + d
+    if len(point_list) < BTN_ALL:
+        point_list.append((x, y))
     img_open = Image.open('../res/button_img.jpg')
     img = ImageTk.PhotoImage(img_open)
     btn = Button(frame, width=w, height=h, image=img)
-    btn['command'] = lambda: shot(cap, frame, btn_list, screen_width, screen_height, iscenter)
+    btn['command'] = lambda: shot(cap, frame, screen_width, screen_height, iscenter)
     btn.place(x=(x - w / 2), y=(y - h / 2))
     frame.pack()
     btn_list.append(btn)
@@ -108,9 +111,12 @@ def get_relationship_eye_screenpoint():
     :return: None
     """
     # input dict into txt
-    fo = open("../res/ECCG_screenPoint.txt", "w")
+    fo = open("../res/ECCG_screenPoint.txt", "a")
     for i in range(len(ECCG_list)):
-        fo.write('%s:%s\n' % (ECCG_list[i], point_list[i]))
+        if i % 9 == 0:
+            fo.write('\n')
+        fo.write('%s:%s\n' % (ECCG_list[i], point_list[i % 9]))
+    fo.write('\n')
     # 关闭打开的文件
     fo.close()
 
@@ -125,8 +131,55 @@ def caculateCoeficiente():
         Z_screenX = a0  * x ^ 2 + a1 * x * y + a2 * y ^ 2 + a3 * x + a4 * y + a5
         Z_screenY = b0  * x ^ 2 + b1 * x * y + b2 * y ^ 2 + b3 * x + b4 * y + b5
     '''
-    if len(ECCG_list) < BTN_ALL:
+    global ECCG_list
+    if len(ECCG_list) < BTN_ALL * EPOCH_ALL:
         return [], []
+
+    '''
+    ECCG_list中有27个注视点，看向同一个点的三个注视点在这里处理，处理完之后将ECCG_list清空并重新将计算好的9个点放入其中
+    '''
+    def Threepoints2Circle(p1, p2, p3):
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = p3
+        x1x1 = x1 * x1
+        y1y1 = y1 * y1
+        x2x2 = x2 * x2
+        y2y2 = y2 * y2
+        x3x3 = x3 * x3
+        y3y3 = y3 * y3
+        x2y3 = x2 * y3
+        x3y2 = x3 * y2
+        x2_x3 = x2 - x3
+        y2_y3 = y2 - y3
+        x1x1py1y1 = x1x1 + y1y1
+        x2x2py2y2 = x2x2 + y2y2
+        x3x3py3y3 = x3x3 + y3y3
+
+        A = x1 * y2_y3 - y1 * x2_x3 + x2y3 - x3y2
+        B = x1x1py1y1 * (-y2_y3) + x2x2py2y2 * (y1 - y3) + x3x3py3y3 * (y2 - y1)
+        C = x1x1py1y1 * x2_x3 + x2x2py2y2 * (x3 - x1) + x3x3py3y3 * (x1 - x2)
+        # D = x1x1py1y1 * (x3y2 - x2y3) + x2x2py2y2 * (x1 * y3 - x3 * y1) + x3x3py3y3 * (x2 * y1 - x1 * y2)
+
+        if A == 0:
+            return round((x1 + x2 + x3) / 3, 2), round((y1 + y2 + y3) / 3, 2)
+        x = -B / (2 * A)
+        y = -C / (2 * A)
+        # r = math.sqrt((B * B + C * C - 4 * A * D) / (4 * A * A))
+        return round(x, 2), round(y, 2)
+
+    def ThreePoints_mean(p1, p2, p3):
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = p3
+        return round((x1 + x2 + x3) / 3, 2), round((y1 + y2 + y3) / 3, 2)
+
+    print('len(ECCG_list)before=', len(ECCG_list))
+    ECCG_list = [ThreePoints_mean(ECCG_list[i], ECCG_list[i + 9], ECCG_list[i + 18]) for i in range(BTN_ALL)]
+    print('len(ECCG_list)after=', len(ECCG_list))
+    with open("../res/ECCG_screenPoint.txt", "a+") as fo:
+        fo.write('ThreeEpoch:')
+    get_relationship_eye_screenpoint()
 
     X = [x[0] for x in ECCG_list]
     Y = [x[1] for x in ECCG_list]
@@ -138,12 +191,9 @@ def caculateCoeficiente():
     # 离散点和拟合函数可视化
     # 拟合注视点横坐标
     Draw3D.drawMap(X, Y, Z_screenX, 'x')
-    # Draw3D.drawSurfaceMap(A, 'x')
-    # Draw3D.drawWireFrameMap(A, 'x')
     # 拟合注视点纵坐标
     Draw3D.drawMap(X, Y, Z_screenY, 'y')
-    # Draw3D.drawSurfaceMap(B, 'y')
-    # Draw3D.drawWireFrameMap(B, 'y')
+
 
     return A, B
 
@@ -224,12 +274,11 @@ def find_max_region(mask_sel):
     return mask_sel
 
 
-def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscenter):
+def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
     """视线标定
 
     :param video_capture: 相机对象
     :param frame_WIN: 画布对象
-    :param btn_list: 按钮列表
     :param screen_width: 屏幕宽度
     :param screen_height: 屏幕高度
     :param iscenter: 是否是屏幕中心点
@@ -237,7 +286,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscent
     """
     # _thread.start_new_thread(interrupt_mainThread, ())
     # global index
-    global btn_index, ec
+    global btn_index, ec, epoch, btn_list
 
     print('photo ' + str(btn_index) + ' is proccessing...')
     # the number of frames per eye_point
@@ -308,6 +357,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscent
                                 temp_ec = right_eye.center
 
                             cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
+                            print('each_cg=', cg)
                             if cg is None or cg[0] is None or cg[1] is None:
                                 break
                             if iscenter:
@@ -316,6 +366,14 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscent
                             CG.append(cg)
                             temp_dst = right_eye.top2bottom
                             top2bottom_list.append(temp_dst)
+
+                            delta = 0 if iscenter else temp_dst - CalibrationHelper.top2bottomDist
+                            each_cg = (cg[0], cg[1] + delta)
+                            each_ec = temp_ec if iscenter else (CalibrationHelper.ec_x, CalibrationHelper.ec_y)
+                            ec_cg = (round((each_cg[0] - each_ec[0]), 2), round((each_cg[1] - each_ec[1]), 2))
+                            frame1 = gaze.annotated_frame(face_image, delta)
+                            cv2.imshow('frame_calibration', frame1)
+                            cv2.imwrite('../image/calibration/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(num) + str(ec_cg) + '.jpg', frame1)
 
                             num += 1
 
@@ -337,7 +395,7 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscent
                 x += t[0]
                 y += t[1]
             ec = (x / num, y / num)
-            print('ec=', ec)
+            print('avg_ec=', ec)
             CalibrationHelper.ec_x = ec[0]
             CalibrationHelper.ec_y = ec[1]
             CalibrationHelper.top2bottomDist = avg_dst
@@ -348,16 +406,12 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscent
             y += t[1]
         delta_dst = avg_dst - CalibrationHelper.top2bottomDist
         cg = (x / num, y / num + delta_dst)
-        print('cg=', cg)
+        print('avg_cg=', cg)
 
         EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))
         print('EC_CG:', EC_CG)
 
         ECCG_list.append(EC_CG)
-
-        frame1 = gaze.annotated_frame(face_image, delta_dst)
-        cv2.imshow('frame_calibration', frame1)
-        cv2.imwrite('../image/calibration/' + str(btn_index) + str(EC_CG) + '.jpg', frame1)
 
         # 成功录入btn_index才会+1
         if btn_index > Config.CALIBRATION_POINTS_NUM // 2 + 1:
@@ -370,10 +424,18 @@ def shot(video_capture, frame_WIN, btn_list, screen_width, screen_height, iscent
         if btn_index <= BTN_ALL:
             create_btn(video_capture, frame_WIN, screen_width, screen_height)
         if btn_index > BTN_ALL:
-            result = tkinter.messagebox.showinfo('提示', '注定点标定结束!')
-            # get the relationship between eye and screenpoint
-            get_relationship_eye_screenpoint()
-            if result == tkinter.messagebox.OK:
-                tkinter.messagebox.showinfo('提示', '视线追踪开始!')
+            if epoch == EPOCH_ALL - 1:
+                # get the relationship between eye and screenpoint(27 points)
+                get_relationship_eye_screenpoint()
+                result = tkinter.messagebox.showinfo('提示', '第{}轮注视点标定结束!'.format(epoch + 1))
+                if result == tkinter.messagebox.OK:
+                    tkinter.messagebox.showinfo('提示', '视线追踪开始!')
+            else:
+                result = tkinter.messagebox.showinfo('提示', '第{}轮注视点标定结束!'.format(epoch + 1))
+                epoch += 1
+                btn_index = 0
+                btn_list = []
+                create_btn(video_capture, frame_WIN, screen_width, screen_height)
+
     else:
         tkinter.messagebox.showinfo('提示', '未成功录入此注视点，请重新点击!')

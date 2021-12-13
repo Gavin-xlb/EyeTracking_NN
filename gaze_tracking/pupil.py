@@ -7,6 +7,7 @@ from core.Config import Config
 from PIL import Image
 import matplotlib.pyplot as plt
 
+from gaze_tracking import calibration
 
 
 class Pupil(object):
@@ -17,7 +18,7 @@ class Pupil(object):
 
     def __init__(self, eye_frame, threshold):
         self.iris_frame = None  # 虹膜二值化图像
-        self.threshold = threshold  # 二值化阈值
+        self.threshold = threshold  # 最佳二值化阈值
         self.x = None  # CG以眼睛区域左上角为坐标原点的横坐标
         self.y = None  # CG以眼睛区域左上角为坐标原点的纵坐标
         self.cg_x = None  # CG以眼睛区域左下角为坐标原点的横坐标
@@ -60,8 +61,17 @@ class Pupil(object):
         Arguments:
             eye_frame (numpy.ndarray): Frame containing an eye and nothing else
         """
+        average_iris_size = Config.AVERAGE_IRIS_SIZE
+        trials = {}
 
-        self.iris_frame = self.image_processing(eye_frame, self.threshold)
+        for thres in range(self.threshold - 10, self.threshold + 11, 1):
+            temp_bin_iris = self.image_processing(eye_frame, thres)
+            trials[thres] = calibration.Calibration.iris_size(temp_bin_iris)
+
+        best_threshold, iris_size = min(trials.items(), key=(lambda p: abs(p[1] - average_iris_size)))
+        print('adapterBestThres=', best_threshold)
+
+        self.iris_frame = self.image_processing(eye_frame, best_threshold)
 
         contours, _ = cv2.findContours(self.iris_frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         contours = sorted(contours, key=cv2.contourArea)
@@ -86,20 +96,11 @@ class Pupil(object):
         print('eyeH:%d;eyeW:%d' % (height, width))
         pupil_outline = np.full((height, width), 255, np.uint8)
         cv2.circle(pupil_outline, (int(x), int(y)), int(radius), (0, 0, 0), 1)
-        # print('contours=', contours[-2])
         for point in contours[-2]:
             cv2.circle(pupil_outline, (int(point[0][0]), int(point[0][1])), 0, (0, 0, 255), 1)
             cv2.circle(eye_frame, (int(point[0][0]), int(point[0][1])), 0, (0, 0, 255), 1)
 
-        # mask = np.full((height, width), 255, np.uint8)
-        #
-        # cv2.fillPoly(mask, [contours[-2]], (0, 0, 0))
         cv2.circle(eye_frame, (int(x), int(y)), int(radius), (0, 0, 0), 1)
         imgs = np.hstack([self.iris_frame, eye_frame, pupil_outline])
         cv2.imshow('show_image', imgs)
-        # try:
-        #     moments = cv2.moments(contours[-2])
-        #     self.x = moments['m10'] / moments['m00']
-        #     self.y = moments['m01'] / moments['m00']
-        # except (IndexError, ZeroDivisionError):
-        #     pass
+

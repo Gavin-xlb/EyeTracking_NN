@@ -5,6 +5,7 @@ import numpy as np
 from core import FixationPoint_Standardization
 from PIL import Image
 
+from core.Config import Config
 from gaze_tracking.pupil import Pupil
 
 
@@ -47,13 +48,18 @@ class Calibration(object):
         Argument:
             frame (numpy.ndarray): Binarized iris frame
         """
-        frame = frame[5:-5, 5:-5]
-        height, width = frame.shape[:2]
-        nb_pixels = height * width
-        nb_blacks = nb_pixels - cv2.countNonZero(frame)
-        if nb_pixels == 0:
+        contours, _ = cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+        if contours is not None and len(contours) > 1:
+            img = frame[5:-5, :]
+            height, width = img.shape[:2]
+            nb_pixels = height * width
+            contours = sorted(contours, key=cv2.contourArea)
+            nb_blacks = cv2.contourArea(contours[-2])
+            if nb_pixels == 0:
+                return 0
+            return nb_blacks / nb_pixels
+        else:
             return 0
-        return nb_blacks / nb_pixels
 
     @staticmethod
     def find_best_threshold(eye_frame):
@@ -64,15 +70,18 @@ class Calibration(object):
             eye_frame (numpy.ndarray): Frame of the eye to be analyzed
         """
 
-        average_iris_size = 0.48
+        average_iris_size = Config.AVERAGE_IRIS_SIZE
         trials = {}
 
         for threshold in range(5, 100, 5):
             iris_frame = Pupil.image_processing(eye_frame, threshold)
+
             trials[threshold] = Calibration.iris_size(iris_frame)
+            # cv2.imwrite(
+            #     '../image/calibration/' + str(threshold) + '_' + str(trials[threshold]) + '.png', iris_frame)
 
         best_threshold, iris_size = min(trials.items(), key=(lambda p: abs(p[1] - average_iris_size)))
-
+        print('iris_size=', iris_size)
         return best_threshold
 
     def evaluate(self, eye_frame, side):

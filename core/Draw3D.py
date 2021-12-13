@@ -6,6 +6,7 @@ import numpy as np
 from core import Surface_fitting
 from core.Config import Config
 
+
 class Draw3D:
     """该类用于绘制拟合函数图像
 

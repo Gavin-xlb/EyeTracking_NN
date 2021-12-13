@@ -22,7 +22,7 @@ class Video(object):
     """
     video_capture = cv2.VideoCapture(Config.TYPE_CAMERA)
     fps = video_capture.get(cv2.CAP_PROP_FPS)
-
+    predict_num = 0
 
     def caculate_eccg(self):
         """计算EC-CG
@@ -96,7 +96,7 @@ class Video(object):
                                 # print('ec=', ec)
                                 print('cg=', cg)
 
-                            num += 1
+                                num += 1
             i += 1
         # shot successfully
         if (i == frame_num) and (num != 0):
@@ -113,11 +113,9 @@ class Video(object):
             cg = (x / num, y / num + delta_dst)
             EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))
             frame1 = gaze.annotated_frame(face_image, delta_dst)
-            cv2.imshow('frame_prediction', frame1)
-            cv2.imwrite('../image/prediction/' + str(EC_CG) + '.jpg', frame1)
-            return EC_CG
+            return EC_CG, frame1
         else:
-            return ()
+            return
 
     def caculatePointAndDisplay(self, A, B):
         """计算预测落点坐标
@@ -142,17 +140,22 @@ class Video(object):
         b3 = B[3]
         b4 = B[4]
         b5 = B[5]
-        eccg = self.caculate_eccg()
-        if eccg:
-            print('predict_eccg:',eccg)
-            x = eccg[0]
-            y = eccg[1]
-            Z_screenX = a0 * x * x + a1 * x * y + a2 * y * y + a3 * x + a4 * y + a5
-            Z_screenY = b0 * x * x + b1 * x * y + b2 * y * y + b3 * x + b4 * y + b5
-            print('Z_screenX=%.2f,Z_screenY=%.2f' % (Z_screenX, Z_screenY))
-            return Z_screenX, Z_screenY
+
+        result = self.caculate_eccg()
+        if result:
+            eccg, frame = result
+            if eccg:
+                print('predict_eccg:', eccg)
+                x = eccg[0]
+                y = eccg[1]
+                Z_screenX = a0 * x * x + a1 * x * y + a2 * y * y + a3 * x + a4 * y + a5
+                Z_screenY = b0 * x * x + b1 * x * y + b2 * y * y + b3 * x + b4 * y + b5
+                print('Z_screenX=%.2f,Z_screenY=%.2f' % (Z_screenX, Z_screenY))
+                return (Z_screenX, Z_screenY), result
+            else:
+                return
         else:
-            return ()
+            return
 
     def geteccg(self):
         return self.caculate_eccg()

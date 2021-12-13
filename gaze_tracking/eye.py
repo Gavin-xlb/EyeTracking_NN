@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 from gaze_tracking.calibration import Calibration
-from .pupil import Pupil
+from gaze_tracking.pupil import Pupil
 
 
 class Eye(object):
@@ -27,7 +27,7 @@ class Eye(object):
         if option == 0:
             self.adjust_threshold(original_frame, landmarks, side, calibration)
         elif option == 1:
-            self.find_pupil(original_frame, landmarks, side, calibration)
+            self.find_pupil(original_frame, landmarks)
 
     @staticmethod
     def _middle_point(p1, p2):
@@ -78,8 +78,7 @@ class Eye(object):
 
         Arguments:
             frame (numpy.ndarray): Frame containing the face
-            landmarks (dlib.full_object_detection): Facial landmarks for the face region
-            points (list): Points of an eye (from the 68 Multi-PIE landmarks)
+            landmarks (list): Points of an eye (from the 68 Multi-PIE landmarks)
         """
         region = np.array(landmarks)
         region = region.astype(np.int32)
@@ -103,7 +102,7 @@ class Eye(object):
         max_y = np.max(region[:, 1]) + margin
 
         self.frame = eye[min_y:max_y, min_x:max_x]
-        cv2.imwrite('../image/gray_eye/' + str(self.cnt) + '.jpg', self.frame)
+        cv2.imwrite('../image/gray_eye/' + str(self.cnt) + '.png', self.frame)
         Eye.cnt += 1
         self.origin = (min_x, min_y)
 

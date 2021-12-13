@@ -163,10 +163,10 @@ class GazeTracking(object):
                 cv2.line(frame, (x_right - 5, y_right), (x_right + 5, y_right), color)
                 cv2.line(frame, (x_right, y_right - 5), (x_right, y_right + 5), color)
                 cv2.circle(frame, (x_right, y_right), int(r_right), (0, 255, 0), 1)
-                # EC
-                cv2.line(frame, (x_center - 3, y_center), (x_center + 3, y_center), (255, 255, 0), 1)
-                cv2.line(frame, (x_center, y_center - 3), (x_center, y_center + 3), (255, 255, 0), 1)
-                # CG
+                # EC 'x'
+                cv2.line(frame, (x_center - 2, y_center - 2), (x_center + 2, y_center + 2), (255, 255, 0), 1)
+                cv2.line(frame, (x_center - 2, y_center + 2), (x_center + 2, y_center - 2), (255, 255, 0), 1)
+                # CG '+'
                 cv2.line(frame, (cg_x - 3, cg_y), (cg_x + 3, cg_y), (0, 255, 0), 1)
                 cv2.line(frame, (cg_x, cg_y - 3), (cg_x, cg_y + 3), (0, 255, 0), 1)
         return frame

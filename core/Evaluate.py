@@ -9,11 +9,15 @@ class Evaluate(object):
     def __init__(self, x, y):
         self.missed_num = 0
         self.accept_num = 0
+        self.accept_num_X = 0
+        self.accept_num_Y = 0
         self.num = 0
         self.screenX = x
         self.screenY = y
         self.missRatio = 0
         self.acceptRatio = 0
+        self.acceptRatio_X = 0
+        self.acceptRatio_Y = 0
 
     def evalute(self, critical, predict_point):
         """评估预测点是否可接受
@@ -32,3 +36,5 @@ class Evaluate(object):
         """
         self.missRatio = round(self.missed_num / self.num, 2)
         self.acceptRatio = round(self.accept_num / (self.num - 2), 2)
+        self.acceptRatio_X = round(self.accept_num_X / (self.num - 2), 2)
+        self.acceptRatio_Y = round(self.accept_num_Y / (self.num - 2), 2)
