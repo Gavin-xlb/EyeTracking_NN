@@ -4,6 +4,7 @@ import face_recognition
 import os
 import tkinter.messagebox
 import numpy as np
+from numpy import *
 import _thread
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from PIL import ImageTk, Image
@@ -174,17 +175,17 @@ def caculateCoeficiente():
         x3, y3 = p3
         return round((x1 + x2 + x3) / 3, 2), round((y1 + y2 + y3) / 3, 2)
 
-    print('len(ECCG_list)before=', len(ECCG_list))
-    ECCG_list = [ThreePoints_mean(ECCG_list[i], ECCG_list[i + 9], ECCG_list[i + 18]) for i in range(BTN_ALL)]
-    print('len(ECCG_list)after=', len(ECCG_list))
-    with open("../res/ECCG_screenPoint.txt", "a+") as fo:
-        fo.write('ThreeEpoch:')
-    get_relationship_eye_screenpoint()
+    # print('len(ECCG_list)before=', len(ECCG_list))
+    # ECCG_list = [ThreePoints_mean(ECCG_list[i], ECCG_list[i + 9], ECCG_list[i + 18]) for i in range(BTN_ALL)]
+    # print('len(ECCG_list)after=', len(ECCG_list))
+    # with open("../res/ECCG_screenPoint.txt", "a+") as fo:
+    #     fo.write('ThreeEpoch:')
+    # get_relationship_eye_screenpoint()
 
     X = [x[0] for x in ECCG_list]
     Y = [x[1] for x in ECCG_list]
-    Z_screenX = [x[0] for x in point_list]
-    Z_screenY = [x[1] for x in point_list]
+    Z_screenX = [x[0] for x in point_list] * 3
+    Z_screenY = [x[1] for x in point_list] * 3
     A = Surface_fitting.matching_3D(X, Y, Z_screenX)
     B = Surface_fitting.matching_3D(X, Y, Z_screenY)
 
@@ -193,7 +194,6 @@ def caculateCoeficiente():
     Draw3D.drawMap(X, Y, Z_screenX, 'x')
     # 拟合注视点纵坐标
     Draw3D.drawMap(X, Y, Z_screenY, 'y')
-
 
     return A, B
 
@@ -274,6 +274,59 @@ def find_max_region(mask_sel):
     return mask_sel
 
 
+def calibration_validate_judgement(epoch, index, eccg_l, newpoint):
+    if index == 0:
+        return True
+    x, y = newpoint
+    eccg_list = eccg_l[epoch * 9:]
+    if index == 1:
+        p0 = eccg_list[0]
+        return x > p0[0] and y > p0[1]
+    elif index == 2:
+        p0 = eccg_list[0]
+        p1 = eccg_list[1]
+        return x < p1[0] and y > p0[1]
+    elif index == 3:
+        p0 = eccg_list[0]
+        p2 = eccg_list[2]
+        return x < p2[0] and x < p0[0] and y > p0[1]
+    elif index == 4:
+        p0 = eccg_list[0]
+        p1 = eccg_list[1]
+        p2 = eccg_list[2]
+        p3 = eccg_list[3]
+        return x > p0[0] and x > p2[0] and y < p1[1] and y < p2[1] and y < p3[1]
+    elif index == 6:
+        p0 = eccg_list[0]
+        p1 = eccg_list[1]
+        p2 = eccg_list[2]
+        p3 = eccg_list[3]
+        return x < p0[0] and x < p2[0] and y < p1[1] and y < p2[1] and y < p3[1]
+    elif index == 7:
+        p0 = eccg_list[0]
+        p4 = eccg_list[4]
+        p2 = eccg_list[2]
+        p5 = eccg_list[5]
+        return x > p0[0] and x > p2[0] and y < p0[1] and y < p4[1] and y < p5[1]
+    elif index == 8:
+        p0 = eccg_list[0]
+        p1 = eccg_list[1]
+        p3 = eccg_list[3]
+        p4 = eccg_list[4]
+        p5 = eccg_list[5]
+        p6 = eccg_list[6]
+        return x < p1[0] and x < p4[0] and x < p6[0] and x > p3[0] and x > p5[0] and y < p0[1] and y < p4[1] and y < p5[1]
+    elif index == 9:
+        p0 = eccg_list[0]
+        p2 = eccg_list[2]
+        p4 = eccg_list[4]
+        p5 = eccg_list[5]
+        p7 = eccg_list[7]
+        return x < p0[0] and x < p2[0] and x < p7[0] and y < p0[1] and y < p4[1] and y < p5[1]
+    else:
+        return False
+
+
 def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
     """视线标定
 
@@ -290,24 +343,27 @@ def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
 
     print('photo ' + str(btn_index) + ' is proccessing...')
     # the number of frames per eye_point
-    frame_num = 5
-    frame_interval = 6
+    frame_num = 20
+    frame_interval = 1
     i = 0
     frame = []
     small_frame = []
-    pre_frame = []
+    pre_frame = []  # 整张原图像
 
     while i < (frame_num - 1) * frame_interval + 1:
         if i % frame_interval == 0:
             # Grab a single frame of video
             ret, f = video_capture.read()
+            pre_frame.append(np.copy(f))
+            f = cv2.cvtColor(f, cv2.COLOR_RGB2GRAY)
+            histogram_f, cdf = CalibrationHelper.histeq(array(f))
             # f = Distortion.dedistortion(f)
             # pre_frame.append(f)
             # f = adaptive_histogram_equalization(cv2.cvtColor(f, cv2.COLOR_BGR2GRAY))
-            frame.append(f)
+            frame.append(uint8(histogram_f))
 
             # Resize frame of video to 1/5 size for faster face detection processing
-            s = cv2.resize(f, (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
+            s = cv2.resize(uint8(histogram_f), (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
 
             small_frame.append(s)
         i = i + 1
@@ -316,68 +372,86 @@ def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
     num = 0
     EC = []
     CG = []
+    temp_EC_CG = []
+    temp_num_list = []
+    annotated_frame_list = []
     top2bottom_list = []
+    temp_face_list = []
+    temp_preface_list = []
     temp_ec = None
     face_image = None
     # frame2 = None
     while j < frame_num:
+
         # Find all the faces and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(small_frame[j], model='cnn')
-        # Display the results
-        for top, right, bottom, left in face_locations:
-            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+        if len(face_locations) != 0:
+            # 找到最大的人脸作为检测人脸
+            max_area = 0
+            max_index = 0
+            for i in range(len(face_locations)):
+                top, right, bottom, left = face_locations[i]
+                if math.fabs((top - bottom) * (right - left)) > max_area:
+                    max_area = math.fabs((top - bottom) * (right - left))
+                    max_index = i
+            top, right, bottom, left = face_locations[max_index]
             top *= 5
             right *= 5
             bottom *= 5
             left *= 5
 
             # Extract the region of the image that contains the face
-            face_image = frame[j][top:bottom, left:right]
-
-            # cv2.imwrite(os.path.join(outdir, 'face_image' + str(btn_index) + '_' + str(i) + '.jpg'),
-            #             face_image)
+            face_image = frame[j][top:bottom, left:right]  # 直方图均衡化之后的人脸图像
+            pre_face_image = np.copy(pre_frame[j][top:bottom, left:right])  # 原人脸图像
             face_landmarks_list = face_recognition.face_landmarks(face_image)
             for face_landmarks in face_landmarks_list:
-                for facial_feature in face_landmarks.keys():
-                    # get right_eye's point
-                    if facial_feature == 'right_eye':
-                        # right_eye_point has 6 points
-                        right_eye_point = face_landmarks[facial_feature]
-                        print(facial_feature, face_landmarks[facial_feature])
+                right_eye_point = face_landmarks['right_eye']
+                print('right_eye', face_landmarks['right_eye'])
 
-                        gaze.find_iris(face_image, right_eye_point, 1, 1)
-                        # 画出眼睛的6个点
-                        for point in right_eye_point:
-                            cv2.circle(face_image, point, 0, (0, 0, 255), 3)
+                gaze.find_iris(face_image, right_eye_point, 1, 1)
+                temp_face = np.copy(pre_face_image)
+                temp_face_list.append(temp_face)
+                # 画出眼睛的6个点
+                for point in right_eye_point:
+                    cv2.circle(pre_face_image, point, 0, (0, 0, 255), 3)
 
-                        right_eye = gaze.eye_right
-                        if right_eye is not None:
-                            if iscenter:
-                                # 如果标定点是屏幕中点，则需要计算EC
-                                temp_ec = right_eye.center
+                right_eye = gaze.eye_right
+                if right_eye is not None:
+                    if iscenter:
+                        # 如果标定点是屏幕中点，则需要计算EC
+                        temp_ec = right_eye.center
 
-                            cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
-                            print('each_cg=', cg)
-                            if cg is None or cg[0] is None or cg[1] is None:
-                                break
-                            if iscenter:
-                                # temp_ec = cg
-                                EC.append(temp_ec)
-                            CG.append(cg)
-                            temp_dst = right_eye.top2bottom
-                            top2bottom_list.append(temp_dst)
+                    cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
+                    print('each_cg=', cg)
+                    if cg is None or cg[0] is None or cg[1] is None:
+                        break
+                    if iscenter:
+                        # temp_ec = cg
+                        EC.append(temp_ec)
+                    CG.append(cg)
+                    temp_dst = right_eye.top2bottom
+                    top2bottom_list.append(temp_dst)
 
-                            delta = 0 if iscenter else temp_dst - CalibrationHelper.top2bottomDist
-                            each_cg = (cg[0], cg[1] + delta)
-                            each_ec = temp_ec if iscenter else (CalibrationHelper.ec_x, CalibrationHelper.ec_y)
-                            ec_cg = (round((each_cg[0] - each_ec[0]), 2), round((each_cg[1] - each_ec[1]), 2))
-                            frame1 = gaze.annotated_frame(face_image, delta)
-                            cv2.imshow('frame_calibration', frame1)
-                            cv2.imwrite('../image/calibration/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(num) + str(ec_cg) + '.jpg', frame1)
+                    delta = 0 if iscenter else temp_dst - CalibrationHelper.top2bottomDist
+                    each_cg = (cg[0], cg[1] + delta)
+                    each_ec = temp_ec if iscenter else (CalibrationHelper.ec_x, CalibrationHelper.ec_y)
+                    ec_cg = (round((each_cg[0] - each_ec[0]), 2), round((each_cg[1] - each_ec[1]), 2))
+                    temp_EC_CG.append(ec_cg)
+                    temp_num_list.append(num)
+                    frame1 = gaze.annotated_frame(pre_face_image, delta)
+                    annotated_frame_list.append(frame1)
+                    temp_preface_list.append(pre_frame[j])
+                    cv2.imshow('frame_calibration', frame1)
+                    # cv2.imwrite('../image/calibration_tag/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(num) + str(ec_cg) + '.bmp', frame1)
+                    # cv2.imwrite(
+                    #     '../image/calibration/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(
+                    #         num) + str(ec_cg) + '.bmp', temp_face)
+                    # cv2.imwrite(
+                    #     '../image/raw_calibration/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(
+                    #         num) + str(ec_cg) + '.bmp', pre_frame[j])
+                    num += 1
 
-                            num += 1
-
-                            break
+                    break
         j += 1
     # num为虹膜二值化成功的次数，并非人眼检测成功的次数
     print('num=', num)
@@ -410,32 +484,45 @@ def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
 
         EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))
         print('EC_CG:', EC_CG)
+        # 将当前EC_CG加入到ECCG_list之前首先判断是否合理
+        if calibration_validate_judgement(epoch, btn_index, ECCG_list, EC_CG):
+            for i in range(len(temp_EC_CG)):
+                cv2.imwrite(
+                    '../image/calibration_tag/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(temp_num_list[i]) + str(
+                        temp_EC_CG[i]) + '.bmp', annotated_frame_list[i])
+                cv2.imwrite(
+                    '../image/calibration/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(
+                        temp_num_list[i]) + str(temp_EC_CG[i]) + '.bmp', temp_face_list[i])
+                cv2.imwrite(
+                    '../image/raw_calibration/' + str(epoch) + 'epoch_' + str(btn_index) + 'point_' + str(
+                        temp_num_list[i]) + str(temp_EC_CG[i]) + '.bmp', temp_preface_list[i])
+            ECCG_list.append(EC_CG)
 
-        ECCG_list.append(EC_CG)
-
-        # 成功录入btn_index才会+1
-        if btn_index > Config.CALIBRATION_POINTS_NUM // 2 + 1:
-            btn_list[btn_index - 1].destroy()
-        else:
-            btn_list[btn_index].destroy()  # delete button which has been clicked just now
-        btn_index += 1
-        if btn_index == Config.CALIBRATION_POINTS_NUM // 2 + 1:
-            btn_index += 1
-        if btn_index <= BTN_ALL:
-            create_btn(video_capture, frame_WIN, screen_width, screen_height)
-        if btn_index > BTN_ALL:
-            if epoch == EPOCH_ALL - 1:
-                # get the relationship between eye and screenpoint(27 points)
-                get_relationship_eye_screenpoint()
-                result = tkinter.messagebox.showinfo('提示', '第{}轮注视点标定结束!'.format(epoch + 1))
-                if result == tkinter.messagebox.OK:
-                    tkinter.messagebox.showinfo('提示', '视线追踪开始!')
+            # 成功录入btn_index才会+1
+            if btn_index > Config.CALIBRATION_POINTS_NUM // 2 + 1:
+                btn_list[btn_index - 1].destroy()
             else:
-                result = tkinter.messagebox.showinfo('提示', '第{}轮注视点标定结束!'.format(epoch + 1))
-                epoch += 1
-                btn_index = 0
-                btn_list = []
+                btn_list[btn_index].destroy()  # delete button which has been clicked just now
+            btn_index += 1
+            if btn_index == Config.CALIBRATION_POINTS_NUM // 2 + 1:
+                btn_index += 1
+            if btn_index <= BTN_ALL:
                 create_btn(video_capture, frame_WIN, screen_width, screen_height)
-
+            if btn_index > BTN_ALL:
+                if epoch == EPOCH_ALL - 1:
+                    # get the relationship between eye and screenpoint(27 points)
+                    get_relationship_eye_screenpoint()
+                    result = tkinter.messagebox.showinfo('提示', '第{}轮注视点标定结束!'.format(epoch + 1))
+                    if result == tkinter.messagebox.OK:
+                        tkinter.messagebox.showinfo('提示', '视线追踪开始!')
+                else:
+                    result = tkinter.messagebox.showinfo('提示', '第{}轮注视点标定结束!'.format(epoch + 1))
+                    epoch += 1
+                    btn_index = 0
+                    btn_list = []
+                    create_btn(video_capture, frame_WIN, screen_width, screen_height)
+        # 如果不合理，重新标定
+        else:
+            tkinter.messagebox.showinfo('提示', '该标定不合理，请重新点击!')
     else:
         tkinter.messagebox.showinfo('提示', '未成功录入此注视点，请重新点击!')

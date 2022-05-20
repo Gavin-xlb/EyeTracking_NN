@@ -1,6 +1,7 @@
 import datetime
 import math
 import random
+import time
 
 from core.Evaluate import Evaluate
 from core.FixationPoint_Standardization import *
@@ -9,7 +10,7 @@ import cv2
 from PIL import ImageTk, Image
 from core import FixationPoint_Standardization, ScreenHelper
 from core.video import Video
-import time
+from numpy import *
 
 
 validate_interval = Config.VALIDATE_INTERVAL  # the time your eyes can be tolerated to leave
@@ -29,6 +30,7 @@ average_accuracy = 0
 average_accuracy_X = 0
 average_accuracy_Y = 0
 label = None
+demoflag = False
 Distortion.inter_corner_shape = Config.Distortion_inter_corner_shape
 Distortion.size_per_grid = Config.Distortion_size_per_grid
 present_time = datetime.datetime.now().strftime('%Y-%m-%d %Hh%Mm%Ss')
@@ -168,7 +170,9 @@ def predict(evaluate):
     i = 0
     title = 'screenPoint' + str(evaluate.screenX) + '_' + str(evaluate.screenY)
     path = '../image/prediction/' + present_time + '/' + title
+    path1 = '../image/raw_prediction/' + present_time + '/' + title
     mkdir(path)
+    mkdir(path1)
     for lbl in label_list:
         lbl.destroy()
     label_list = []
@@ -182,8 +186,9 @@ def predict(evaluate):
 
         if point and result:
             x_predict, y_predict = point
-            eccg, frame = result
-            cv2.imwrite(path + '/' + str(i) + str(eccg) + '_' + str(point) + '.jpg', frame)
+            eccg, frame, pre_frame = result
+            cv2.imwrite(path + '/' + str(i) + str(eccg) + '_' + str(point) + '.bmp', frame)
+            cv2.imwrite(path1 + '/' + str(i) + str(eccg) + '_' + str(point) + '.bmp', pre_frame)
             cv2.imshow('frame_prediction', frame)
             cv2.waitKey(1)
 
@@ -229,6 +234,8 @@ def predict(evaluate):
 
     if len(dist_list) > 2:
         # (X,Y)同时考虑
+        with open('../res/pointsList.txt', 'a+') as fo:
+            fo.write('XY\n')
         ma = max(dist_list)
         del points_list[dist_list.index(ma)]
         dist_list.remove(ma)
@@ -240,13 +247,28 @@ def predict(evaluate):
         print('critical=', critical)
         valid_points = []
         valid_dists = []
+        with open('../res/pointsList.txt', 'a+') as fo:
+            fo.write('realPoint:%s' % '(' + str(evaluate.screenX) + ',' + str(evaluate.screenY) + ')\n')
+            fo.write('critical distance is %.2f\n' % critical)
         for i in range(len(dist_list)):
+            with open('../res/pointsList.txt', 'a+') as fo:
+                fo.write('point:')
+                fo.write(str(points_list[i]))
+                fo.write('   distance=')
+                fo.write(str(dist_list[i]))
             if dist_list[i] <= critical:
+                with open('../res/pointsList.txt', 'a+') as fo:
+                    fo.write('     √\n')
                 valid_dists.append(dist_list[i])
                 valid_points.append(points_list[i])
+            else:
+                with open('../res/pointsList.txt', 'a+') as fo:
+                    fo.write('\n')
         evaluate.accept_num = len(valid_dists)
 
         # 只考虑X
+        with open('../res/pointsList.txt', 'a+') as fo:
+            fo.write('X\n')
         ma = max(dist_list_X)
         del points_list_X[dist_list_X.index(ma)]
         dist_list_X.remove(ma)
@@ -258,12 +280,24 @@ def predict(evaluate):
         valid_points_X = []
         valid_dists_X = []
         for i in range(len(dist_list_X)):
+            with open('../res/pointsList.txt', 'a+') as fo:
+                fo.write('point:')
+                fo.write(str(points_list_X[i]))
+                fo.write('   distance=')
+                fo.write(str(dist_list_X[i]))
             if dist_list_X[i] <= critical:
+                with open('../res/pointsList.txt', 'a+') as fo:
+                    fo.write('     √\n')
                 valid_dists_X.append(dist_list_X[i])
                 valid_points_X.append(points_list_X[i])
+            else:
+                with open('../res/pointsList.txt', 'a+') as fo:
+                    fo.write('\n')
         evaluate.accept_num_X = len(valid_dists_X)
 
         # 只考虑Y
+        with open('../res/pointsList.txt', 'a+') as fo:
+            fo.write('Y\n')
         ma = max(dist_list_Y)
         del points_list_Y[dist_list_Y.index(ma)]
         dist_list_Y.remove(ma)
@@ -275,9 +309,19 @@ def predict(evaluate):
         valid_points_Y = []
         valid_dists_Y = []
         for i in range(len(dist_list_Y)):
+            with open('../res/pointsList.txt', 'a+') as fo:
+                fo.write('point:')
+                fo.write(str(points_list_Y[i]))
+                fo.write('   distance=')
+                fo.write(str(dist_list_Y[i]))
             if dist_list_Y[i] <= critical:
+                with open('../res/pointsList.txt', 'a+') as fo:
+                    fo.write('     √\n')
                 valid_dists_Y.append(dist_list_Y[i])
                 valid_points_Y.append(points_list_Y[i])
+            else:
+                with open('../res/pointsList.txt', 'a+') as fo:
+                    fo.write('\n')
         evaluate.accept_num_Y = len(valid_dists_Y)
 
         evaluate.caculate()
@@ -345,6 +389,10 @@ def output_predictInfo(evaluate, points_list, points_list_X, points_list_Y):
     fo.close()
 
 
+def change_demoflag():
+    global demoflag
+    demoflag = True
+
 if __name__ == '__main__':
     displayTitle()
     # Distortion.calib('../image/distortion_img', 'png')
@@ -367,9 +415,12 @@ if __name__ == '__main__':
     root.overrideredirect(1)  # 去除标题栏
 
     del_files('../image/calibration/')
+    del_files('../image/calibration_tag/')
+    del_files('../image/raw_calibration/')
     mkdir('../image/prediction/' + present_time)
 
     flag = False
+
     A = []
     B = []
     clf_x, clf_y = None, None
@@ -380,14 +431,16 @@ if __name__ == '__main__':
     predictBtn = Button(canvas, width=8, height=1, text='predict')
     predictBtn.place(x=screen_width - 150, y=5)
 
+    demoBtn = Button(canvas, width=8, height=1, text='demo')
+    demoBtn.place(x=screen_width - 250, y=5)
+
     adjust = False
     tkinter.messagebox.showinfo('提示', '瞳孔阈值调整开始...')
     interrupt = None
     first_createBtn = True
     while True:
-
+        # # 将图像显示到画布
         _, pic = Video.video_capture.read()
-        # pic = Distortion.dedistortion(pic)
         cov = cv2.cvtColor(pic, cv2.COLOR_RGB2BGR)  # 初始图像是RGB格式，转换成BGR即可正常显示了
         img = Image.fromarray(cov).resize((screen_width, screen_height), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
@@ -401,7 +454,9 @@ if __name__ == '__main__':
         sel = canvas.create_rectangle(validate_x1, validate_y1, validate_x2, validate_y2, outline='black', width=5)
 
         if not gaze.calibration.is_complete():
-            adjust_threshold(pic)
+            pic = cv2.cvtColor(pic, cv2.COLOR_RGB2GRAY)
+            histogram_pic, cdf = CalibrationHelper.histeq(array(pic))
+            adjust_threshold(uint8(histogram_pic))
         if gaze.calibration.is_complete() and adjust is False:
             adjust = True
             tkinter.messagebox.showinfo('提示', '瞳孔阈值调整完成!')
@@ -411,50 +466,59 @@ if __name__ == '__main__':
         if flag is False:
             # clf_x, clf_y = FixationPoint_Standardization.caculateCoeficiente_RF()
             A, B = caculateCoeficiente()
+
+            if A:
+                flag = True
+                predictBtn['command'] = lambda: create()
+                demoBtn['command'] = lambda: change_demoflag()
         # if clf_x is not None:
         if A:
-            predictBtn['command'] = lambda: create()
-            # print("start predicting....")
-            flag = True
+            if demoflag:
+                print("start predicting....")
+                temp = video.caculatePointAndDisplay(A, B)
+                if temp:
+                    point, result = temp
+                else:
+                    point = None
+                    result = None
 
-            # point = video.caculatePointAndDisplay(A, B)
-            # if point:
-            #     x_predict, y_predict = point
-            #
-            #     label.place(x=int(x_predict), y=int(y_predict))
-            #     if isValidate(x_predict, y_predict):
-            #         validate = True
-            #         canvas.itemconfig(sel, outline='green')
-            #         text = ''
-            #         canvas.create_text(250, 100, text=text)
-            #     else:
-            #         if validate:
-            #             time_start = time.time()
-            #             time_end = time_start
-            #         else:
-            #             time_end = time.time()
-            #         time_interval = time_end - time_start
-            #         text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
-            #         canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
-            #         canvas.itemconfig(sel, outline='red')
-            #         if time_interval > validate_interval:
-            #             canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
-            #         validate = False
-            #
-            #     print("predictPoint:(%.2f,%.2f)" % (x_predict, y_predict))
-            # else:
-            #     if validate:
-            #         time_start = time.time()
-            #         time_end = time_start
-            #     else:
-            #         time_end = time.time()
-            #     time_interval = time_end - time_start
-            #     text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
-            #     canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
-            #     canvas.itemconfig(sel, outline='red')
-            #     if time_interval > validate_interval:
-            #         canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
-            #     validate = False
+                if point and result:
+                    x_predict, y_predict = point
+                    eccg, frame, pre_frame = result
+                    label.place(x=int(x_predict), y=int(y_predict))
+                    if isValidate(x_predict, y_predict):
+                        validate = True
+                        canvas.itemconfig(sel, outline='green')
+                        text = ''
+                        canvas.create_text(250, 100, text=text)
+                    else:
+                        if validate:
+                            time_start = time.time()
+                            time_end = time_start
+                        else:
+                            time_end = time.time()
+                        time_interval = time_end - time_start
+                        text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
+                        canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
+                        canvas.itemconfig(sel, outline='red')
+                        if time_interval > validate_interval:
+                            canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
+                        validate = False
+
+                    print("predictPoint:(%.2f,%.2f)" % (x_predict, y_predict))
+                else:
+                    if validate:
+                        time_start = time.time()
+                        time_end = time_start
+                    else:
+                        time_end = time.time()
+                    time_interval = time_end - time_start
+                    text = 'the time you leave: ' + str(round(time_interval, 2)) + ' seconds'
+                    canvas.create_text(250, 100, text=text, fill='red', font=("Purisa", 30))
+                    canvas.itemconfig(sel, outline='red')
+                    if time_interval > validate_interval:
+                        canvas.create_text(150, 150, text='Cheating...', fill='red', font=("Purisa", 30))
+                    validate = False
 
 
         # 更新界面

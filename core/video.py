@@ -1,5 +1,6 @@
 import cv2
 import face_recognition
+from numpy import *
 import numpy as np
 
 from core.CalibrationHelper import CalibrationHelper
@@ -34,16 +35,19 @@ class Video(object):
         i = 0
         frame = []
         small_frame = []
-        pre_frame = []
+        pre_frame = None  # 整张原图像
 
         while i < frame_num:
             # Grab a single frame of video
             ret, f = self.video_capture.read()
+            pre_frame = np.copy(f)
+            f = cv2.cvtColor(f, cv2.COLOR_RGB2GRAY)
+            histogram_f, cdf = CalibrationHelper.histeq(array(f))
             # f = Distortion.dedistortion(f)
-            # pre_frame.append(f)
+
             # f = FixationPoint_Standardization.adaptive_histogram_equalization(
             #     cv2.cvtColor(f, cv2.COLOR_BGR2GRAY))
-            frame.append(f)
+            frame.append(uint8(histogram_f))
             # Resize frame of video to 1/5 size for faster face detection processing
             s = cv2.resize(frame[i], (0, 0), fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
 
@@ -72,31 +76,29 @@ class Video(object):
 
                 # Extract the region of the image that contains the face
                 face_image = frame[i][top:bottom, left:right]
+                pre_face_image = np.copy(pre_frame[top:bottom, left:right])
 
                 face_landmarks_list = face_recognition.face_landmarks(face_image)
                 for face_landmarks in face_landmarks_list:
-                    for facial_feature in face_landmarks.keys():
-                        # get right_eye's point
-                        if facial_feature == 'right_eye':
-                            right_eye_point = face_landmarks[facial_feature]
+                    right_eye_point = face_landmarks['right_eye']
 
-                            gaze.find_iris(face_image, right_eye_point, 1, 1)
-                            for point in right_eye_point:
-                                cv2.circle(face_image, point, 0, (0, 0, 255), 3)
-                            right_eye = gaze.eye_right
-                            if right_eye is not None:
-                                # ec = right_eye.center
-                                cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
-                                if cg is None or cg[0] is None or cg[1] is None:
-                                    break
-                                # EC.append(ec)
-                                CG.append(cg)
-                                temp_dst = right_eye.top2bottom
-                                top2bottom_list.append(temp_dst)
-                                # print('ec=', ec)
-                                print('cg=', cg)
+                    gaze.find_iris(face_image, right_eye_point, 1, 1)
+                    for point in right_eye_point:
+                        cv2.circle(pre_face_image, point, 0, (0, 0, 255), 3)
+                    right_eye = gaze.eye_right
+                    if right_eye is not None:
+                        # ec = right_eye.center
+                        cg = (right_eye.pupil.cg_x, right_eye.pupil.cg_y)
+                        if cg is None or cg[0] is None or cg[1] is None:
+                            break
+                        # EC.append(ec)
+                        CG.append(cg)
+                        temp_dst = right_eye.top2bottom
+                        top2bottom_list.append(temp_dst)
+                        # print('ec=', ec)
+                        print('cg=', cg)
 
-                                num += 1
+                        num += 1
             i += 1
         # shot successfully
         if (i == frame_num) and (num != 0):
@@ -112,8 +114,8 @@ class Video(object):
             delta_dst = avg_dst - CalibrationHelper.top2bottomDist
             cg = (x / num, y / num + delta_dst)
             EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))
-            frame1 = gaze.annotated_frame(face_image, delta_dst)
-            return EC_CG, frame1
+            frame1 = gaze.annotated_frame(pre_face_image, delta_dst)
+            return EC_CG, frame1, pre_frame
         else:
             return
 
@@ -143,7 +145,7 @@ class Video(object):
 
         result = self.caculate_eccg()
         if result:
-            eccg, frame = result
+            eccg, frame, pre_frame = result
             if eccg:
                 print('predict_eccg:', eccg)
                 x = eccg[0]

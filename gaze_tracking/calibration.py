@@ -5,6 +5,7 @@ import numpy as np
 from core import FixationPoint_Standardization
 from PIL import Image
 
+from core.CalibrationHelper import CalibrationHelper
 from core.Config import Config
 from gaze_tracking.pupil import Pupil
 
@@ -69,12 +70,13 @@ class Calibration(object):
         Argument:
             eye_frame (numpy.ndarray): Frame of the eye to be analyzed
         """
-
+        # average_iris_size = 0.345
         average_iris_size = Config.AVERAGE_IRIS_SIZE
         trials = {}
+        histogram_eye, cdf = CalibrationHelper.histeq(np.array(eye_frame))
 
         for threshold in range(5, 100, 5):
-            iris_frame = Pupil.image_processing(eye_frame, threshold)
+            iris_frame = Pupil.image_processing(np.uint8(histogram_eye), threshold)
 
             trials[threshold] = Calibration.iris_size(iris_frame)
             # cv2.imwrite(

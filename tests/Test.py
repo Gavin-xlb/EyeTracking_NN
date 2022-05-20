@@ -44,7 +44,7 @@ max_lowThreshold = 100
 ratio = 3
 kernel_size = 3
 
-img = cv2.imread('../image/gray_eye/826.png')
+img = cv2.imread('../image/gray_eye/0.png')
 img = cv2.resize(img, (0, 0), fx=5, fy=5, interpolation=cv2.INTER_AREA)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 

@@ -1,7 +1,8 @@
 import numpy as np
 import cv2
 
-from core import FixationPoint_Standardization
+from core import FixationPoint_Standardization, Hough
+from core.CalibrationHelper import CalibrationHelper
 from core.Config import Config
 
 from PIL import Image
@@ -63,26 +64,30 @@ class Pupil(object):
         """
         average_iris_size = Config.AVERAGE_IRIS_SIZE
         trials = {}
+        histogram_eye, cdf = CalibrationHelper.histeq(np.array(eye_frame))
+        histogram_eye= np.uint8(histogram_eye)
 
+        # Algorithm1:对人眼区域二值化后，最小外接圆拟合
         for thres in range(self.threshold - 10, self.threshold + 11, 1):
-            temp_bin_iris = self.image_processing(eye_frame, thres)
+            temp_bin_iris = self.image_processing(histogram_eye, thres)
             trials[thres] = calibration.Calibration.iris_size(temp_bin_iris)
 
         best_threshold, iris_size = min(trials.items(), key=(lambda p: abs(p[1] - average_iris_size)))
         print('adapterBestThres=', best_threshold)
 
-        self.iris_frame = self.image_processing(eye_frame, best_threshold)
+        self.iris_frame = self.image_processing(histogram_eye, best_threshold)
 
         contours, _ = cv2.findContours(self.iris_frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         contours = sorted(contours, key=cv2.contourArea)
         (x, y), radius = cv2.minEnclosingCircle(contours[-2])
 
-        # circles = cv2.HoughCircles(eye_frame, cv2.HOUGH_GRADIENT, 1, 50, param1=50, param2=10, minRadius=5, maxRadius=45)
-        # print('circles=', circles)
-        # if circles is not None and len(circles) > 0:
-        #     print('circleNum= ', len(circles))
-        #     print(circles[0])
-        #     x, y, radius = circles[0]
+        # Algorithm2:利用算法1获得大致的瞳孔中心位置，从而获得ROI
+        # 对瞳孔区域(ROI区域)进行边缘检测后，霍夫变换圆形检测
+        # height, width = eye_frame.shape
+        # estimated_radius = height / 4
+        # eye_roi = histogram_eye[y-estimated_radius:y+estimated_radius, x-estimated_radius:x+estimated_radius]
+        # Hough.detect_circle(eye_roi)
+
         self.x = round(x, 2)
         self.y = round(y, 2)
         self.cg_x = round(x, 2)

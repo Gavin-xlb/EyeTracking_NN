@@ -51,7 +51,7 @@ class GazeTracking(object):
     def find_iris(self, frame, landmarks, side, option):
         self.frame = frame
         # 人脸灰度图像
-        frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+        # frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         try:
             if side == 0:
                 self.eye_left = Eye(frame, landmarks, 0, self.calibration, option)

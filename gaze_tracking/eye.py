@@ -91,6 +91,10 @@ class Eye(object):
         height, width = frame.shape[:2]
         black_frame = np.zeros((height, width), np.uint8)
         mask = np.full((height, width), 255, np.uint8)
+        region[1][1] -= 5
+        region[2][1] -= 5
+        region[4][1] += 5
+        region[5][1] += 5
         cv2.fillPoly(mask, [region], (0, 0, 0))
         eye = cv2.bitwise_not(black_frame, frame.copy(), mask=mask)
 
@@ -98,8 +102,8 @@ class Eye(object):
         margin = 5
         min_x = np.min(region[:, 0])
         max_x = np.max(region[:, 0])
-        min_y = np.min(region[:, 1]) - margin
-        max_y = np.max(region[:, 1]) + margin
+        min_y = np.min(region[:, 1])
+        max_y = np.max(region[:, 1])
 
         self.frame = eye[min_y:max_y, min_x:max_x]
         cv2.imwrite('../image/gray_eye/' + str(self.cnt) + '.png', self.frame)
@@ -194,3 +198,5 @@ class Eye(object):
             calibration.evaluate(self.frame, side)
         if calibration.is_complete():
             Calibration.best_thres = calibration.threshold(side)
+            with open('../res/processing_data.txt', 'w') as fo:
+                fo.write('best_threshold=%.2f' % (Calibration.best_thres))

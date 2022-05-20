@@ -53,5 +53,5 @@ def mkdir(path):
 # img = cv2.imread(r'D:\python_Projects\EyeTracking_NN\image\calibration\0epoch_0point_0(-0.5, 2.0).jpg')
 # cv2.imwrite(path + '/' + '1.jpg', img)
 
-str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+str = [1,2] *2
 print(str, type(str))

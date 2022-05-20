@@ -2,13 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5f2f2ee-9eec-4dd7-b1b9-33290c0befc9" name="Default Changelist" comment="adapter threshold has completed!">
-      <change afterPath="$PROJECT_DIR$/tests/Test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/TextImg.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/AlgorithmCompare.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/Canny.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/Hough.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/Hough_transform.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/compare_ECCG_screenPoint.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/compare_predictInfo.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/data.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/evaluate_data.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/pointsList.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/processing_data.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Test_histogram.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Test_predictionResult.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Test_samePic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/CalibrationHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/CalibrationHelper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Config.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Draw3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Draw3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Evaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/Evaluate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/FixationPoint_Standardization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video.py" afterDir="false" />
@@ -16,9 +27,17 @@
       <change beforePath="$PROJECT_DIR$/gaze_tracking/eye.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/eye.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/gaze_tracking.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gaze_tracking/pupil.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaze_tracking/pupil.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/dedistortion_img/distortion_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/image/dedistortion_img/distortion_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/dedistortion_img/distortion_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/image/dedistortion_img/distortion_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/dedistortion_img/distortion_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/image/dedistortion_img/distortion_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/dedistortion_img/distortion_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/image/dedistortion_img/distortion_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image/dedistortion_img/distortion_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/image/dedistortion_img/distortion_7.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/ECCG_screenPoint.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/res/predictInfo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/predictInfo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/TestPoints2Circle.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestPoints2Circle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/Test_gpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Test_gpu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/video1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/video1.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,16 +84,16 @@
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\python_Projects\EyeTracking_NN" />
+      <recent name="D:\python_Projects\eyeTracking_NN\core" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\python_Projects\EyeTracking_NN\core" />
       <recent name="D:\python_Projects\EyeTracking_NN\tests" />
       <recent name="D:\python_Projects\EyeTracking_NN" />
       <recent name="D:\EyeTracking_NN-master" />
       <recent name="D:\EyeTracking_NN-master\core" />
-      <recent name="D:\python_Projects\EyeTracking_NN\core" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\python_Projects\EyeTracking_NN" />
-      <recent name="D:\python_Projects\eyeTracking_NN\core" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -90,7 +109,29 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.main">
-    <configuration name="Test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="AlgorithmCompare" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="eyeTracking_NN" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/AlgorithmCompare.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="eyeTracking_NN" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -104,25 +145,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestPoints2Circle" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="eyeTracking_NN" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/TestPoints2Circle.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -153,7 +175,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="TextImg" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Test_predictionResult" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="eyeTracking_NN" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -166,7 +188,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/TextImg.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/Test_predictionResult.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -244,18 +266,18 @@
     <list>
       <item itemvalue="Python.face_recognition" />
       <item itemvalue="Python.main" />
-      <item itemvalue="Python.TextImg" />
-      <item itemvalue="Python.Test (1)" />
       <item itemvalue="Python.Test_gpu" />
-      <item itemvalue="Python.TestPoints2Circle" />
+      <item itemvalue="Python.Test" />
+      <item itemvalue="Python.AlgorithmCompare" />
+      <item itemvalue="Python.Test_predictionResult" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.TestPoints2Circle" />
+        <item itemvalue="Python.AlgorithmCompare" />
+        <item itemvalue="Python.Test_predictionResult" />
+        <item itemvalue="Python.Test" />
         <item itemvalue="Python.Test_gpu" />
-        <item itemvalue="Python.Test (1)" />
-        <item itemvalue="Python.TextImg" />
       </list>
     </recent_temporary>
   </component>
@@ -367,7 +389,42 @@
       <workItem from="1639203826122" duration="9629000" />
       <workItem from="1639214212645" duration="7593000" />
       <workItem from="1639286304723" duration="9735000" />
-      <workItem from="1639391706993" duration="3574000" />
+      <workItem from="1639391706993" duration="5502000" />
+      <workItem from="1639477444645" duration="9413000" />
+      <workItem from="1639728523277" duration="1311000" />
+      <workItem from="1640151955129" duration="2857000" />
+      <workItem from="1640242777957" duration="11978000" />
+      <workItem from="1640501156281" duration="1435000" />
+      <workItem from="1641550370368" duration="580000" />
+      <workItem from="1641562545152" duration="3116000" />
+      <workItem from="1644980578738" duration="1020000" />
+      <workItem from="1644992131520" duration="3137000" />
+      <workItem from="1647514735588" duration="6125000" />
+      <workItem from="1647756991626" duration="7007000" />
+      <workItem from="1648019648462" duration="445000" />
+      <workItem from="1648537967816" duration="16360000" />
+      <workItem from="1648780478508" duration="5565000" />
+      <workItem from="1648800674074" duration="11157000" />
+      <workItem from="1648869759925" duration="4138000" />
+      <workItem from="1649232459954" duration="1246000" />
+      <workItem from="1649763402028" duration="6528000" />
+      <workItem from="1649770590122" duration="27248000" />
+      <workItem from="1650082540073" duration="3921000" />
+      <workItem from="1650168387280" duration="3568000" />
+      <workItem from="1650263071550" duration="7095000" />
+      <workItem from="1650821623237" duration="3857000" />
+      <workItem from="1650868260459" duration="4167000" />
+      <workItem from="1650889350730" duration="11687000" />
+      <workItem from="1650941027284" duration="4389000" />
+      <workItem from="1651058201728" duration="5468000" />
+      <workItem from="1651074008472" duration="284000" />
+      <workItem from="1651205610523" duration="408000" />
+      <workItem from="1651645292434" duration="7779000" />
+      <workItem from="1652168629980" duration="1807000" />
+      <workItem from="1652522878575" duration="15002000" />
+      <workItem from="1652769491330" duration="13365000" />
+      <workItem from="1652857015214" duration="24689000" />
+      <workItem from="1653025727314" duration="1963000" />
     </task>
     <task id="LOCAL-00001" summary="adapter threshold has completed!">
       <created>1626446827356</created>
@@ -447,8 +504,9 @@
     <SUITE FILE_PATH="coverage/EyeTracking_NN$Testgui.coverage" NAME="Testgui Coverage Results" MODIFIED="1622045023071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/EyeTracking_NN$test_svr.coverage" NAME="test_svr Coverage Results" MODIFIED="1621836164089" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$Test_fileIO.coverage" NAME="Test_fileIO Coverage Results" MODIFIED="1620831547530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/EyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1639394598960" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/EyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1653026789955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$main.coverage" NAME="main Coverage Results" MODIFIED="1621685786295" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/eyeTracking_NN$svr.coverage" NAME="svr Coverage Results" MODIFIED="1621683921481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/EyeTracking_NN$AlgorithmCompare.coverage" NAME="AlgorithmCompare Coverage Results" MODIFIED="1650294785663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
   </component>
 </project>
