@@ -1688,6 +1688,6 @@ def Algorithm_4():
 
 
 Algorithm_1()
-# Algorithm_2()
-# Algorithm_3()
-# Algorithm_4()
+Algorithm_2()
+Algorithm_3()
+Algorithm_4()

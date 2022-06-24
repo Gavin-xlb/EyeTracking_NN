@@ -5,7 +5,7 @@ class Config(object):
     """该类包括了一些程序的常量、全局参数
     """
     # 摄像头类型 0:自带摄像头;1:外设
-    TYPE_CAMERA = 0
+    TYPE_CAMERA = 1
     # 平均瞳孔半径
     AVERAGE_PUPIL_RADIUS = 8
     # 标定点总数

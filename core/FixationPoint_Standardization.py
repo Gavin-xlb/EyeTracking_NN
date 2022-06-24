@@ -191,9 +191,9 @@ def caculateCoeficiente():
 
     # 离散点和拟合函数可视化
     # 拟合注视点横坐标
-    Draw3D.drawMap(X, Y, Z_screenX, 'x')
+    # Draw3D.drawMap(X, Y, Z_screenX, 'x')
     # 拟合注视点纵坐标
-    Draw3D.drawMap(X, Y, Z_screenY, 'y')
+    # Draw3D.drawMap(X, Y, Z_screenY, 'y')
 
     return A, B
 
@@ -457,10 +457,16 @@ def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
     print('num=', num)
     # shot successfully
     if (j == frame_num) and (num > 0):
+        # 求中位数
+        # def get_median(data):
+        #     data.sort()
+        #     half = len(data) // 2
+        #     return (data[half] + data[~half]) / 2
         p = 0
         for d in top2bottom_list:
             p += d
         avg_dst = p / num
+        # avg_dst = get_median(top2bottom_list)
         print('avg_dst=', avg_dst)
         if iscenter:
             x = 0
@@ -469,6 +475,7 @@ def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
                 x += t[0]
                 y += t[1]
             ec = (x / num, y / num)
+            # ec = (get_median([x[0] for x in EC]), get_median([x[1] for x in EC]))
             print('avg_ec=', ec)
             CalibrationHelper.ec_x = ec[0]
             CalibrationHelper.ec_y = ec[1]
@@ -480,6 +487,7 @@ def shot(video_capture, frame_WIN, screen_width, screen_height, iscenter):
             y += t[1]
         delta_dst = avg_dst - CalibrationHelper.top2bottomDist
         cg = (x / num, y / num + delta_dst)
+        # cg = (get_median([x[0] for x in CG]), get_median([x[1] for x in CG]) + delta_dst)
         print('avg_cg=', cg)
 
         EC_CG = (round((cg[0] - CalibrationHelper.ec_x), 2), round((cg[1] - CalibrationHelper.ec_y), 2))

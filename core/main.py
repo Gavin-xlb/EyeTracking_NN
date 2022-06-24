@@ -163,7 +163,7 @@ def predict(evaluate):
     points_list_Y = []  # 所有纵坐标预测成功的点
     dist_list_Y = []  # 预测点纵坐标到真实点的距离
 
-    critical = screen_height / 6
+    critical = screen_height / 4
 
     num = Video.fps * 4  # 每一个真实注视点捕获帧数
     missed_num = 0

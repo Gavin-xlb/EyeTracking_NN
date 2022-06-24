@@ -103,6 +103,13 @@ import numpy as np
 #     # f[top:bottom, left:right] = face_image
 # cv2.imwrite('../image/333.bmp', f)
 
-f = cv2.imread('../image/eye_frame.bmp', cv2.IMREAD_GRAYSCALE)
-ret, new_frame = cv2.threshold(f, 30, 255, cv2.THRESH_BINARY)
-cv2.imwrite('../image/333.bmp', new_frame)
+# f = cv2.imread('../image/eye_frame.bmp', cv2.IMREAD_GRAYSCALE)
+# ret, new_frame = cv2.threshold(f, 30, 255, cv2.THRESH_BINARY)
+# cv2.imwrite('../image/333.bmp', new_frame)
+
+# 函数：
+def get_median(data):
+    data.sort()
+    half = len(data) // 2
+    return (data[half] + data[~half]) / 2
+print(get_median([1,2,58,45,6,7]))

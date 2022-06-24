@@ -48,9 +48,9 @@ def test_detect_circle(eye_roi):
         x, y, radius = circles[0][0]
         return x, y, radius
     return
-img_gray = cv2.imread('../image/eye.jpg', cv2.IMREAD_GRAYSCALE)
-x, y, radius = detect_circle(img_gray)
-print(x, y, radius)
+# img_gray = cv2.imread('../image/eye.jpg', cv2.IMREAD_GRAYSCALE)
+# x, y, radius = detect_circle(img_gray)
+# print(x, y, radius)
 
 # import time
 # import cv2
